@@ -1,0 +1,92 @@
+\ProvidesPackage{mybeamer-article}
+\PassOptionsToPackage{english,german}{babel}
+\RequirePackage{babel, etoolbox, booktabs}
+\RequirePackage[autostyle=true, german=quotes, english=american]{csquotes}
+\RequirePackage{mymath2}
+\RequirePackage[shortlabels]{enumitem}
+\RequirePackage{hyperref, bookmark, cleveref}
+\RequirePackage{mytheorems2-dict}
+\RequirePackage[amsmath, hyperref, thmmarks]{ntheorem}
+
+% For compatibility with mybeamer2
+\newcommand{\beamerqed}{} % There must be a space before \beamerqed. I don't know why.
+\newcommand{\beamerref}[1]{\ref{#1}}
+\newcommand{\beamertcbremovespace}{}
+\newcommand{\beameraddspace}[1]{}
+\newcommand{\beamervfill}{}
+\newcommand{\miscenvfont}[1]{\textbf{#1}}
+
+% JLU colors
+\definecolor{jlu-blue}{RGB}{62,105,172}
+\definecolor{jlu-komp}{RGB}{94,68,15} % complementary to jlu-blue (180 degrees)
+\definecolor{jlu-purple}{RGB}{76,57,184} % similar to jlu-blue
+%\definecolor{jlu-lite}{RGB}{57,172,184}
+\definecolor{jlu-lite}{RGB}{60,147,194} % similar to jlu-blue
+\definecolor{jlu-green}{RGB}{57,171,53}
+
+% Fett uebertraegt sich auf Mathe-Modus
+\g@addto@macro\bfseries{\boldmath}
+
+%%% THEOREMS %%%%%%
+
+% Styles
+\newtheoremstyle{thmnobreak}% Exactly like "plain" in ntheorem
+	{\item[\hskip\labelsep \theorem@headerfont ##2\ ##1\theorem@separator]}%
+	{\item[\hskip\labelsep \theorem@headerfont ##2\ ##1\ ##3\theorem@separator]}%
+\newtheoremstyle{thmnobreaknonumber}% Like "thmnobreak" but without number
+	{\item[\hskip\labelsep \theorem@headerfont ##1\theorem@separator]}%
+	{\item[\hskip\labelsep \theorem@headerfont ##1\ ##3\theorem@separator]}%
+\newtheoremstyle{miscnobreak}% Only optional name
+	{\item[\hskip\labelsep \theorem@headerfont ##2\theorem@separator]}%
+	{\item[\hskip\labelsep \theorem@headerfont ##2\ ##3\theorem@separator]}%
+
+% Counter
+\newcommand{\thmlevelcounter}{section}
+\newcounter{thm}[\thmlevelcounter]
+\renewcommand{\thethm}{\csname the\thmlevelcounter\endcsname.\arabic{thm}}
+
+% Shortcut for definition with encapsulating environment
+% The environment name "nth#1" must not contain a hypen (-). Otherwise, endmarks do not work correctly
+% if the proof ends on enumerate or equation.
+\newcommand{\definetheorem}[2]{%
+	\newtheorem{nth#1}[thm]{\protect\GetTranslation{#2}}%
+	\newenvironment<>{#1}[1]%
+		{%
+			\ifblank{##1}{\begin{nth#1}}{\begin{nth#1}[##1]}%
+		}%
+		{\end{nth#1}}%
+}
+
+% Definition of theorems
+\theoremseparator{.}
+
+\theoremstyle{miscnobreak}
+\theorembodyfont{\normalfont}
+\definetheorem{miscenv}{miscthm}
+
+\theoremstyle{thmnobreak}
+\definetheorem{remark}{remark}
+\definetheorem{definition}{definition}
+\definetheorem{notation}{notation}
+\definetheorem{example}{example}
+\definetheorem{convention}{convention}
+\definetheorem{reminder}{reminder}
+
+\theorembodyfont{\normalfont\itshape}
+\definetheorem{theorem}{theorem}
+\definetheorem{lemma}{lemma}
+\definetheorem{corollary}{corollary}
+
+\theoremstyle{thmnobreaknonumber}
+\newcommand{\qedbox}{\begin{tikzpicture}[scale=0.25]
+	\draw (0,0) -- (1,0) -- (1,1) -- (0, 1) -- cycle;
+\end{tikzpicture}}
+\theoremsymbol{\qedbox}
+\qedsymbol{\qedbox}
+\theoremheaderfont{\normalfont\itshape}
+\theorembodyfont{\normalfont}
+%\newtheorem{proof}{\protect\GetTranslation{proof}}
+\definetheorem{proof}{proof} % endmark does not work with enumerate for encapsulated environment
+
+%% Standout frame
+\newenvironment{standoutframe}{\begin{frame}}{\end{frame}}

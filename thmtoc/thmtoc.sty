@@ -1,0 +1,47 @@
+% Provides list of theorems
+\ProvidesPackage{thmtoc}
+\RequirePackage{titletoc}
+
+
+% Name des counters, der für Sätze o.Ä. verwendet wird / Name of the counter for theorems etc.
+\newcommand{\theoremcountername}{thm}
+
+% Benutzer-Interface / User interface
+% Kapitel zu thmtoc hinzufügen (#1: Name des Kapitels, #2: interner Name des thmtocs) / Add chapter to thmtoc (#1: chapter name, #2: internal thmtoc name)
+\newcommand{\thmchaptertotoc}[2]{\addcontentsline{thmtoc_#2}{chapter}{\protect\numberline{\thechapter}#1}}
+% thmtoc erzeugen (#1: interner Name des thmtocs, #2: Name des thmtocs) / Print thmtoc (#1: internal thmtoc name, #2: Printed thmtoc name)
+\newcommand{\printthmtoc}[2]{\chapter*{#2}\markright{\MakeUppercase{#2}}\ifblank{#1}{\@starttoc{thmtoc}}{\@starttoc{thmtoc_#1}}}
+% Print thmtoc as section
+\newcommand{\printthmtocsection}[2]{\section*{#2}\markright{\MakeUppercase{#2}}\ifblank{#1}{\@starttoc{thmtoc}}{\@starttoc{thmtoc_#1}}}
+% Markierung für wichtige Einträge / emphasis for important entries
+\newcommand{\thmemph}[1]{\textbf{#1}}
+
+%% Interface für Pakete / Interface for packages
+% Eintrag zu thmtoc hinzufügen (#1: Nummer des Eintrags, #2: Name des Eintrags, #3: interner Name des thmtocs) / Create thmtoc entry (#1: entry number, #2: entry name, #3: internal thmtoc name)
+\newcommand{\thmcaption}[3]{\addcontentsline{thmtoc_#3}{theorem}{\protect\numberline{#1}#2}}
+% Neue Seite in thmtoc erzwingen (#1: interner Name des thmtocs) / Force new page in thmtoc (#1: internal thmtoc name)
+\newcommand{\thmtocnewpage}[1]{\addtocontents{thmtoc_#1}{\protect\newpage}}
+
+%% Aussehen der Verzeichnisse (titletoc)
+
+\contentsuse{theorem}{thmtoc}
+\contentsuse{thmchapter}{thmtoc}
+\titlecontents{theorem}[5.5em]{\filright}{\contentslabel[\hyperlink{\theoremcountername.\tothmlink\thecontentslabel}{\thecontentslabel}]{4em}}{}{\titlerule*[8pt]{.}\contentspage}
+% thmchapter ist wie chapter, aber mit groesserer Schrift. Im Moment nicht verwendet. (Zum Aendern \thmchaptertotoc aendern.)
+%\titlecontents{thmchapter}[1.5em]{\addvspace{1.0em plus 0.3em minus 0.1em}\filright\bfseries\Large}{\contentslabel[\hyperlink{chapter.\tothmlink\thecontentslabel}{\thecontentslabel}]{1.5em}}{}{}%{\hfill\contentspage}
+
+%% Falls parts benutzt werden, sodass mit jedem part die chapter-Nummerierung von vorne beginnt, muss die part-Nummer zum hyperref-Link eines chapters hinzugefügt werden
+\newcommand{\tothmlink}{}
+\newcommand{\addtothmlink}[1]{\renewcommand{\tothmlink}{#1}}
+% Diesen Befehl aufrufen, wenn parts benutzt werden / If parts are used AND chapter numbering restarts at 1 in each chapter, then this command must be called in the preamble
+\newcommand{\thmtocuseparts}{%
+	\renewcommand{\theHchapter}{\thepart.\thechapter}% Hyperref fuer chapters anpassen
+	\addtothmlink{\thepart.}%
+}
+
+%% Altes Zeug / Obsolete
+%\newcommand{\thmtoctheoremformat}[1]{\hyperlink{\theoremcountername.\thecontentslabel}{\contentslabel{4em}#1}}
+%\titlecontents{theorem}[5.5em]{\filright}{\thmtoctheoremformat}{}{\titlerule*[8pt]{.}\contentspage}
+%\newcommand{\currentthmtoc}{thmtoc}
+%\newcommand{\setcurrentthmtoc}[1]{\ifblank{#1}{\renewcommand{\currentthmtoc}{thmtoc}}{\renewcommand{\currentthmtoc}{thmtoc_#1}}}
+%\newcommand{\listoftheorems}[1][]{\chapter*{\listoftheoremsname}\markright{\MakeUppercase{\listoftheoremsname}}\ifblank{#1}{\@starttoc{thmtoc}}{\@starttoc{thmtoc_#1}}}

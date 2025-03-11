@@ -1,0 +1,213 @@
+% enumitem is not compatible with beamer
+\ProvidesPackage{mybeamer2}
+\PassOptionsToPackage{english,german,shorthands=off}{babel}
+\RequirePackage{babel}
+\RequirePackage{mymath2, graphicx, tcolorbox, booktabs}
+\RequirePackage[autostyle=true, german=quotes, english=american]{csquotes}
+%\RequirePackage[thmmarks]{ntheorem}
+\RequirePackage{etoolbox}
+\RequirePackage{amsthm} % For \qed command
+\RequirePackage{xkeyval} % Package options
+\RequirePackage{hyperref,bookmark,cleveref}
+\RequirePackage{mytheorems2-dict}
+
+% This option makes a toc appear at the beginning of every section
+\DeclareOptionX{toc-section}{
+	\AtBeginSection{%
+		\begin{frame}{}
+			\tableofcontents[currentsection]
+		\end{frame}
+	}
+}
+
+% Choose color palette for tcolorboxes. The jlu color theme must be loaded if thmcolor=jlu is chosen.
+\DeclareOptionX{thmcolor}{
+	\ifstrequal{#1}{jlu}{
+		\colorlet{theorem-colback}{jlu-purple!10!white}
+		\colorlet{theorem-colframe}{jlu-purple}
+		\colorlet{lemma-colback}{jlu-lite!10!white}
+		\colorlet{lemma-colframe}{jlu-lite}
+		\colorlet{definition-colback}{jlu-blue!10!white}
+		\colorlet{definition-colframe}{jlu-blue}
+		\colorlet{corollary-colback}{theorem-colback}
+		\colorlet{corollary-colframe}{theorem-colframe}
+		\colorlet{miscenv}{jlu-blue}
+	}{}
+	\ifstrequal{#1}{rptu}{
+%		\colorlet{theorem-colback}{rptu-second!20!white}
+%		\colorlet{theorem-colframe}{rptu-second!80!black}
+%		\colorlet{lemma-colback}{rptu-second!20!white}
+%		\colorlet{lemma-colframe}{rptu-second}
+%		\colorlet{definition-colback}{rptu-main!10!white}
+%		\colorlet{definition-colframe}{rptu-main}
+%		\colorlet{corollary-colback}{theorem-colback}
+%		\colorlet{corollary-colframe}{theorem-colframe}
+%		\colorlet{miscenv}{rptu-main}
+		\colorlet{theorem-colback}{rptu-violet!10!white}
+		\colorlet{theorem-colframe}{rptu-violet}
+		\colorlet{lemma-colback}{rptu-greengrey!10!white}
+		\colorlet{lemma-colframe}{rptu-bluegrey}
+		\colorlet{definition-colback}{rptu-darkblue!10!white}
+		\colorlet{definition-colframe}{rptu-darkblue}
+		\colorlet{corollary-colback}{theorem-colback}
+		\colorlet{corollary-colframe}{theorem-colframe}
+		\colorlet{miscenv}{rptu-darkblue}
+	}{}
+	\ifstrequal{#1}{palette}{
+		\usebeamercolor{palette primary}
+		\usebeamercolor{palette secondary}
+		\usebeamercolor{palette tertiary}
+		\colorlet{theorem-colback}{palette tertiary.bg!10!white}
+		\colorlet{theorem-colframe}{palette tertiary.bg}
+		\colorlet{definition-colback}{palette secondary.bg!10!white}
+		\colorlet{definition-colframe}{palette secondary.bg}
+		\colorlet{lemma-colback}{palette secondary.bg!10!white}
+		\colorlet{lemma-colframe}{palette secondary.bg}
+		\colorlet{corollary-colback}{theorem-colback}
+		\colorlet{corollary-colframe}{theorem-colframe}
+		\colorlet{miscenv}{palette primary.fg}
+		\setbeamercolor{standout}{use = palette secondary, parent=palette secondary}
+	}{}
+}
+\ExecuteOptionsX{thmcolor=palette}
+\ProcessOptionsX\relax
+
+
+
+%% Bold transfers to math mode
+\g@addto@macro\bfseries{\boldmath}
+
+
+%% Commands
+% Reference overlays
+% https://tex.stackexchange.com/questions/34458/reference-overlay-numbers-with-names?noredirect=1&lq=1
+\DeclareRobustCommand*{\savepause}[1]{\only<1>{\immediate\write\@auxout{\string\pauseentry{\the\c@framenumber}{#1}{\the\c@beamerpauses}}}}
+\newcommand*{\usepause}[1]{\@ifundefined{pauses@\the\c@framenumber @#1}{1}{\@nameuse{pauses@\the\c@framenumber @#1}}}
+\newcommand*{\pauseentry}[3]{\global\@namedef{pauses@#1@#2}{#3}}
+
+%\newcommand{\placeqed}{\only<.->{\qedhere}}
+
+%% Theorem-like environments
+% Colors
+\tcbset{left=1mm, right=1mm, top=0.5mm, bottom=0.5mm} % Margins of tcolorbox
+
+% Boxes (helper environments)
+\newtcolorbox{theorem-tcb}[1]{title={\GetTranslation{theorem} #1}, colback=theorem-colback, colframe=theorem-colframe}
+\newtcolorbox{lemma-tcb}[1]{title={\GetTranslation{lemma} #1}, colback=lemma-colback, colframe=lemma-colframe}
+\newtcolorbox{corollary-tcb}[1]{title={\GetTranslation{corollary} #1}, colback=corollary-colback, colframe=corollary-colframe}
+\newtcolorbox{definition-tcb}[1]{title={\GetTranslation{definition} #1}, colback=definition-colback, colframe=definition-colframe}
+\newtcolorbox{notation-tcb}[1]{title={\GetTranslation{notation} #1}, colback=definition-colback, colframe=definition-colframe}
+
+% Actual environments (overlay aware)
+\renewenvironment<>{theorem}[1]{\begin{uncoverenv}#2\begin{theorem-tcb}{#1}}{\end{theorem-tcb}\end{uncoverenv}}
+\renewenvironment<>{lemma}[1]{\begin{uncoverenv}#2\begin{lemma-tcb}{#1}}{\end{lemma-tcb}\end{uncoverenv}}
+\renewenvironment<>{corollary}[1]{\begin{uncoverenv}#2\begin{corollary-tcb}{#1}}{\end{corollary-tcb}\end{uncoverenv}}
+\renewenvironment<>{definition}[1]{\begin{uncoverenv}#2\begin{definition-tcb}{#1}}{\end{definition-tcb}\end{uncoverenv}}
+\renewenvironment<>{notation}[1]{\begin{uncoverenv}#2\begin{notation-tcb}{#1}}{\end{notation-tcb}\end{uncoverenv}}
+
+% Other environments
+\newcommand{\miscenvfont}[1]{\textcolor{miscenv}{\textbf{#1}}}
+\newenvironment<>{miscenv}[1]{\begin{uncoverenv}#2\miscenvfont{#1.}}{\end{uncoverenv}}
+\newenvironment<>{remark}[1]{\begin{miscenv}#2{\GetTranslation{remark}#1}}{\end{miscenv}}
+\newenvironment<>{reminder}[1]{\begin{miscenv}#2{\GetTranslation{reminder}#1}}{\end{miscenv}}
+\newenvironment<>{example}[1]{\begin{miscenv}#2{\GetTranslation{example}#1}}{\end{miscenv}}
+\newenvironment<>{convention}[1]{\begin{miscenv}#2{\GetTranslation{convention}#1}}{\end{miscenv}}
+\newenvironment<>{proof}[1]{\begin{miscenv}#2{\GetTranslation{proof}#1}}{\end{miscenv}}
+
+% For compatibility with mybeamer-article
+\newcommand{\beamerqed}{\qed} % There must be a space before \beamerqed. I don't know why.
+\newcommand{\beamerref}[1]{Folie~\ref{#1}}
+\newcommand{\beamertcbremovespace}{\beameraddspace{-0.5}}
+\newcommand{\beameraddspace}[1]{\vspace{#1\baselineskip}}
+\providecommand{\removedisplaybelowskip}{}
+\renewcommand{\removedisplaybelowskip}{}
+\newcommand{\beamervfill}{\vfill}
+
+%%% Standout frame
+\setbeamercolor{standout}{use = palette secondary, parent=palette secondary}
+\newenvironment{standoutframe}[2][]{%
+	\setbeamertemplate{footline}{}
+	\setbeamertemplate{headline}{}
+	\setbeamercolor{normal text}{use = standout, fg = standout.fg, bg = standout.bg}
+	\usebeamercolor[fg]{normal text}
+	\begin{frame}[environment=standoutframe,c,#1]{#2}
+		\vfill\vfill\LARGE\bfseries\centering
+}{\vfill\end{frame}}
+
+%%% Operator in sans serif
+\let\max\relax
+\let\det\relax
+\let\dim\relax
+\let\diag\relax
+\let\ggT\relax
+\let\id\relax
+\let\exp\relax
+\let\charac\relax
+\let\GL\relax
+\let\SL\relax
+\let\Aut\relax
+\let\spec\relax
+\let\Tr\relax
+\let\Rad\relax
+\let\End\relax
+\let\Hom\relax
+\let\deg\relax
+\let\Ker\relax
+\DeclareMathOperator{\max}{\textsf{max}}
+\DeclareMathOperator{\det}{\textsf{det}}
+\DeclareMathOperator{\dim}{\textsf{dim}}
+\DeclareMathOperator{\diag}{\textsf{diag}}
+\DeclareMathOperator{\ggT}{\textsf{ggT}}
+\DeclareMathOperator{\id}{\textsf{id}}
+\DeclareMathOperator{\exp}{\textsf{exp}}
+\DeclareMathOperator{\charac}{\textsf{char}}
+\DeclareMathOperator{\GL}{\textsf{GL}}
+\DeclareMathOperator{\SL}{\textsf{SL}}
+\DeclareMathOperator{\Aut}{\textsf{Aut}}
+\DeclareMathOperator{\spec}{\textsf{spec}}
+\DeclareMathOperator{\Tr}{\textsf{Tr}}
+\DeclareMathOperator{\Rad}{\textsf{Rad}}
+\DeclareMathOperator{\End}{\textsf{End}}
+\DeclareMathOperator{\Hom}{\textsf{Hom}}
+\DeclareMathOperator{\deg}{\textsf{deg}}
+\DeclareMathOperator{\Ker}{\textsf{ker}}
+
+%%%%%%% OBSOLETE %%%%%%%%
+
+%% Choose middle entry of footline. Also removes total page number.
+%\DeclareOptionX{footline}{
+%	\ifstrequal{#1}{title}{\newcommand{\insertfootlinemid}{\insertshorttitle}}{}
+%	\ifstrequal{#1}{section}{\newcommand{\insertfootlinemid}{\insertsectionhead}}{}
+%	\setbeamertemplate{footline}
+%	{
+%	  \leavevmode%
+%	  \hbox{%
+%	  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+%	    \usebeamerfont{author in head/foot}\insertshortauthor\expandafter\ifblank\expandafter{\beamer@shortinstitute}{}{~~(\insertshortinstitute)}
+%	  \end{beamercolorbox}%
+%	  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+%	    \usebeamerfont{title in head/foot}\insertfootlinemid
+%	  \end{beamercolorbox}%
+%	  \begin{beamercolorbox}[wd=.333334\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+%	    \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}
+%	    \makebox[2ex][r]{\insertframenumber{}}\hspace*{2ex} 
+%	  \end{beamercolorbox}}%
+%	  \vskip0pt%
+%	}
+%}
+%% Defines headline with one entry
+%\DeclareOptionX{headline-full}{
+%	\ifstrequal{#1}{none}{\setbeamertemplate{headline}{}}{
+%		\ifstrequal{#1}{title}{\newcommand{\insertfullheadline}{\insertshorttitle}}{}
+%		\ifstrequal{#1}{section}{\newcommand{\insertfullheadline}{\insertsectionhead}}{}
+%		\setbeamertemplate{headline}
+%		{
+%		  \leavevmode%
+%		  \hbox{%
+%		  \begin{beamercolorbox}[wd=\paperwidth,ht=2.65ex,dp=1.5ex,center]{section in head/foot}%
+%		    \usebeamerfont{section in head/foot}\insertfullheadline
+%		  \end{beamercolorbox}}%
+%		  \vskip0pt%
+%		}
+%	}
+%}

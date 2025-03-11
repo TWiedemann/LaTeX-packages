@@ -1,0 +1,377 @@
+\ProvidesPackage{mytheorems2}
+
+\RequirePackage{translations,tikz,thmtoc,pgffor,tcolorbox,suffix,mathtools}
+\RequirePackage[shortlabels]{enumitem}
+\RequirePackage{xkeyval} % Package options
+%\RequirePackage{mymath}
+\RequirePackage[amsmath, hyperref, thmmarks]{ntheorem}
+\RequirePackage[bookmarksnumbered=true, pdfencoding=auto]{hyperref}
+\RequirePackage{bookmark}
+\RequirePackage[noabbrev]{cleveref}
+
+% Dictionary
+\RequirePackage{mytheorems2-dict}
+
+\tcbuselibrary{theorems,breakable,skins}
+\tcbset{label separator=}
+
+%%% --- "Global variables" etc. ---
+\definecolor{yellowboxframe}{RGB}{135,131,98}
+\definecolor{yellowboxback}{RGB}{255,255,191}
+\newcommand{\thmlabelprefix}{} % Prefix for theorem labels
+\newcommand{\thmlevelcounter}{} % Counter within which theorems are numbered
+\newcommand{\mytheoremsmode}{} % "mode" of package (given by options). Each mode consists of some default settings.
+\newcommand{\proofheaderfont}{\normalfont\bfseries\itshape}
+% Declare lists (apparently, empty lists are impossible)
+\listadd{\tcbtheoremslist}{uselessentry} % list of theorems which are placed in tcolorboxes
+\listadd{\italictheoremslist}{uselessentry} % list of theorems whose body is italic
+% Booleans
+\newbool{thmbreak} % Whether line breaks after "Theorem x.y"
+\booltrue{thmbreak}
+%\newbool{thmtoc-default}
+%\boolfalse{thmtoc-default}
+
+%%% --- Package options ---
+% Unknown option -> error message
+\DeclareOptionX*{\PackageWarning{mytheorems2}{`\CurrentOption' ignored}}
+% Whether theorem header ends with a line break or not
+\DeclareOptionX{thmbreak}[true]{\setbool{thmbreak}{#1}}
+\ExecuteOptionsX{thmbreak=true} % default value
+% Counter within which theorems are numbered
+\DeclareOptionX{theoremlevel}{\renewcommand{\thmlevelcounter}{#1}}
+\ExecuteOptionsX{theoremlevel=section}
+% List of theorems which are placed in tcolorboxes
+\newcommand{\settcbcolor}[3]{ % Sets colback and colframe color of #1
+	\expandafter\xdef\csname #1colback\endcsname{#2}%
+	\expandafter\xdef\csname #1colframe\endcsname{#3}%
+}
+\DeclareOptionX{tcb-theorems}{
+	\pgfkeys{
+		/utils/my Foreach/.code={
+			\listadd{\tcbtheoremslist}{##1}%
+			\settcbcolor{##1}{black!5!white}{black!75!white}% Default color
+		},
+		/utils/my Foreach/.list={#1}
+	}
+}
+% List of theorems whose body should be italic
+\DeclareOptionX{italic}{
+	\pgfkeys{
+		/utils/my Foreach/.code={
+			\listadd{\italictheoremslist}{##1}%
+		},
+		/utils/my Foreach/.list={#1}
+	}
+}
+% Define an option "thmtoc-xyz = abc" for every theorem-like environment xyz. The thmtoc-entries are stored in a file with the extension ".thmtoc_abc".
+% The boolean thmtocfor#1set describes whether #1 should be listed in some thmtoc. thmtocfor#1 stores the desired thmtoc-file.
+\pgfkeys{
+	/utils/my Foreach/.code={
+		\expandafter\xdef\csname thmtocfor#1\endcsname{}% Define command "thmtocfor#1". Initially empty.
+		\newbool{thmtocfor#1set}% Define bool "thmtocfor#1set"
+		\DeclareOptionX{thmtoc-#1}{% Define option "thmtoc-#1"
+			\booltrue{thmtocfor#1set}% Set bool to true
+			\expandafter\xdef\csname thmtocfor#1\endcsname{##1}% Set command to "abc"
+		}
+	},
+	/utils/my Foreach/.list={definition,notation,theorem,lemma,corollary,lemcorollary,proposition,algorithm,remark,example,examples,convention,secconvention,counterexample,counterexamples,claim,miscthm,exercise,observation,fact,reminder,construction,note,warning,goal}
+}
+
+% Mode of package
+\DeclareOptionX{mode}{%
+	% Paper mode: No tcolorboxes, some italics
+	\expandafter\ifstrequal{#1}{paper}{%
+		\pgfkeys{
+			/utils/my Foreach/.code={
+				\listadd{\italictheoremslist}{##1}%
+			},
+			/utils/my Foreach/.list={theorem, lemma, corollary, lemcorollary, proposition} % Environments with italic bodies
+		}%
+		\boolfalse{thmbreak}
+	% Lecture mode: tcolorboxes in several colors, no italics
+	}{
+		\ifstrequal{#1}{lecture}{%
+			\pgfkeys{
+				/utils/my Foreach/.code={
+					\listadd{\tcbtheoremslist}{##1}%
+				},
+				/utils/my Foreach/.list={theorem, definition, notation, lemma, corollary, lemcorollary, proposition, convention, secconvention}
+			}%
+			\settcbcolor{theorem}{red!10!white}{red!75!black}%
+			\settcbcolor{definition}{yellowboxback}{yellowboxframe}%
+			\settcbcolor{notation}{yellowboxback}{yellowboxframe}%
+			\settcbcolor{lemma}{blue!10!white}{blue!75!black}%
+			\settcbcolor{corollary}{green!10!white}{green!50!black}%
+			\settcbcolor{lemcorollary}{blue!15!white}{blue!50!black}%
+			\settcbcolor{proposition}{violet!10!white}{violet!100!white}%
+			\settcbcolor{convention}{black!5!white}{black!90!white}%
+			\settcbcolor{secconvention}{black!5!white}{black!90!white}%
+		}{}
+	}
+}
+% End of options
+\ProcessOptionsX\relax
+
+%%%% --- Default thmtoc behavious ---
+%\ifbool{thmtoc-default}{
+%	\pgfkeys{
+%		/utils/my Foreach/.code={
+%			\expandafter\xdef\csname thmtocfor#1\endcsname{}%
+%			\newbool{thmtocfor#1set}%
+%			\DeclareOptionX{thmtoc-#1}{
+%				\booltrue{thmtocfor#1set}%
+%				\expandafter\xdef\csname thmtocfor#1\endcsname{##1}
+%			}
+%		},
+%		/utils/my Foreach/.list={definition,theorem,lemma,corollary,lemcorollary,proposition}
+%	}
+%}{}
+
+%%% --- Counters ---
+\newcounter{thm}[\thmlevelcounter]
+\renewcommand{\thethm}{\csname the\thmlevelcounter\endcsname.\arabic{thm}}
+\newcounter{claim}
+\numberwithin{claim}{thm}
+\renewcommand{\theclaim}{\arabic{claim}}
+
+%%% --- QED symbols ---
+\newcommand{\qedbox}{\hspace{0.5cm}\begin{tikzpicture}[scale=0.23]
+	\draw (0,0) -- (1,0) -- (1,1) -- (0,1) -- cycle;
+\end{tikzpicture}} % Square
+\newcommand{\qedtriangle}{\hspace{0.5cm}\begin{tikzpicture}[scale=0.23]
+	\draw (0,0) -- (1,0) -- (0,1) -- cycle;
+\end{tikzpicture}} % Triangle
+
+%%% --- Theorems styles (ntheorem) ---
+% break styles
+\newtheoremstyle{thmbreak}% Like "break" in ntheorem, but theorem number and name are switched and optional name is without brackets
+	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##2\ ##1\theorem@separator}\hbox{\strut}}}]}%
+	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##2\ ##1\ ##3\theorem@separator}\hbox{\strut}}}]}
+\newtheoremstyle{thmbreaknonumber}% Like thmbreak but without number
+	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##1\theorem@separator}\hbox{\strut}}}]}%
+	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##1\ ##3\theorem@separator}\hbox{\strut}}}]}
+\newtheoremstyle{miscbreak}% Like "thmbreak" but only with optional name
+	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##2\ \theorem@separator}\hbox{\strut}}}]}%
+	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##2\ ##3\theorem@separator}\hbox{\strut}}}]}
+\newtheoremstyle{miscbreaknonumber}% Like thmbreak but without number
+	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont \theorem@separator}\hbox{\strut}}}]}%
+	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##3\theorem@separator}\hbox{\strut}}}]}
+% nobreak styles
+\newtheoremstyle{thmnobreak}% Exactly like "plain" in ntheorem
+	{\item[\hskip\labelsep \theorem@headerfont ##2\ ##1\theorem@separator]}%
+	{\item[\hskip\labelsep \theorem@headerfont ##2\ ##1\ ##3\theorem@separator]}%
+\newtheoremstyle{thmnobreaknonumber}% Like "thmnobreak" but without number
+	{\item[\hskip\labelsep \theorem@headerfont ##1\theorem@separator]}%
+	{\item[\hskip\labelsep \theorem@headerfont ##1\ ##3\theorem@separator]}%
+\newtheoremstyle{miscnobreak}% Only optional name
+	{\item[\hskip\labelsep \theorem@headerfont ##2\theorem@separator]}%
+	{\item[\hskip\labelsep \theorem@headerfont ##2\ ##3\theorem@separator]}%
+\newtheoremstyle{miscnobreaknonumber}
+	{\item[\hskip\labelsep \theorem@headerfont \theorem@separator]}%
+	{\item[\hskip\labelsep \theorem@headerfont ##3\theorem@separator]}%
+% Proof and claim styles
+\newtheoremstyle{proofbreak}% Like thmbreak, but 1. no number and 2. if optional name is given, only the optional name is displayed
+	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##1\theorem@separator}\hbox{\strut}}}]}%
+	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##3\theorem@separator}\hbox{\strut}}}]}
+\newtheoremstyle{proofnobreak}% Like thmnobreak, but 1. no number and 2. if optional name is given, only the optional name is displayed
+	{\item[\hskip\labelsep \theorem@headerfont ##1\theorem@separator]}%
+	{\item[\hskip\labelsep \theorem@headerfont ##3\theorem@separator]}%
+% Claim and proof of claim styles
+\newtheoremstyle{claim}% Exactly like "plain" in ntheorem
+	{\item[\hskip\labelsep \theorem@headerfont ##1\ ##2\theorem@separator]}%
+	{\item[\hskip\labelsep \theorem@headerfont ##1\ ##2\ (##3)\theorem@separator]}%
+\newtheoremstyle{claimnonumber}%
+	{\item[\hskip\labelsep \theorem@headerfont ##1\theorem@separator]}%
+	{\item[\hskip\labelsep \theorem@headerfont ##1\ (##3)\theorem@separator]}%
+\newtheoremstyle{claimproof}% Like "claim" but 1. without a number and 2. if an optional name is given, only the optional name is displayed
+	{\item[\hskip\labelsep \theorem@headerfont ##1\theorem@separator]}%
+	{\item[\hskip\labelsep \theorem@headerfont ##3\theorem@separator]}%
+
+%%% --- Lengths and spacing commands ---
+% Lengths
+\newlength{\afterthmspace}
+\newlength{\afterclaimspace}
+\newlength{\afterbox}
+\setlength{\afterthmspace}{0.7\baselineskip plus 0.2\baselineskip minus 0.1\baselineskip} % Placed after and before every unboxed theorem
+\setlength{\afterclaimspace}{\parskip} % Placed after and before claims and proofs of claims
+\setlength{\afterbox}{0.4cm plus 0.2cm minus 0.15cm} % Placed after and before every tcolorbox
+% Spacing commands
+\newcommand{\boxspace}{\addvspace{0.1cm plus 0.05cm minus 0.075cm}}
+
+%%%%%% ----- Definition of theorem environments -----
+\theoremnumbering{arabic}
+
+%%% --- Theorem-like environments ---
+% Font settings etc.
+\theoremheaderfont{\normalfont\bfseries}
+\theorembodyfont{\normalfont}
+\ifbool{thmbreak}{\theoremseparator{\vspace*{.5\parskip}}}{\theoremseparator{.}}
+\theoremsymbol{}
+\theorempreskip{\afterthmspace}
+\theorempostskip{\afterthmspace}
+
+% Command for defining an unboxed theorem environment
+\newcommand{\definetheorem}[3]{%
+%	\ifbool{thmbreak}{\theoremstyle{thmbreak}}{\theoremstyle{thmnobreak}}
+	\theoremstyle{#3}
+%	\ifinlist{#1}{\italictheoremslist}{\theorembodyfont{\normalfont\itshape}}{}
+	\newtheorem{nth-#1}[thm]{\protect\GetTranslation{#2}}%
+%	\theorembodyfont{\normalfont}
+	\newenvironment{#1}[3]%
+		{%
+			\ifblank{##1}{\begin{nth-#1}}{\begin{nth-#1}[##1]}%
+			\ifblank{##2}{}{\label[#1]{\thmlabelprefix##2}}%
+			\ifbool{thmtocfor#1set}{\thmcaption{\thethm}{##3}{\csname thmtocfor#1\endcsname}}{}%
+		}%
+		{\end{nth-#1}}%
+%	\ifbool{thmbreak}{\theoremstyle{thmbreaknonumber}}{\theoremstyle{thmnobreaknonumber}}
+	\theoremstyle{#3nonumber}
+	\renewtheorem{nth-#1*}{\protect\GetTranslation{#2}}
+	\newenvironment{#1*}[1]
+		{\ifblank{##1}{\begin{nth-#1*}}{\begin{nth-#1*}[##1]}}
+		{\end{nth-#1*}}
+}
+
+% Default settings for tcolorboxes
+\tcbset{thmbox/.style={
+	fonttitle=\bfseries, % bold title
+	theorem number and name, % "1.2.3 Theorem" instead of "Theorem 1.2.3"
+	separator sign none, % No symbol between "Theorem 1.2.3" and header
+	beforeafter skip=\afterbox, % Minimum distance before and after box
+	breakable,
+	enhanced jigsaw
+}}
+
+% Command for defining a tcolorbox environment
+\newcommand{\definetcbtheorem}[2]{
+	\newtcbtheorem[
+		use counter=thm,number within=\thmlevelcounter, % Counter
+		crefname={\GetTranslation{#2-cref}}{\GetTranslation{#2-cref-plural}}] % Name for cref-references
+		{#1-box} % Name of environment
+		{\GetTranslation{#2}} % Header of environment
+		{colback=\csname #1colback\endcsname,colframe=\csname #1colframe\endcsname,thmbox} % Color
+		{\thmlabelprefix} % Prefix for label
+	\newenvironment{#1}[3]
+		{\begin{#1-box}{##1}{##2}\ifbool{thmtocfor#1set}{\thmcaption{\thethm}{##3}{\csname thmtocfor#1\endcsname}}{}}
+		{\end{#1-box}}
+	\newenvironment{#1*}[1]
+		{\begin{#1-box*}{##1}}
+		{\end{#1-box*}}
+}
+
+\newcommand{\definetheorembyparameters}[2]{
+	\ifinlist{#1}{\tcbtheoremslist}
+		{\definetcbtheorem{#1}{#1}}
+		{
+			\ifinlist{#1}{\italictheoremslist}{\theorembodyfont{\normalfont\itshape}}{\theorembodyfont{\normalfont}}
+			\ifbool{thmbreak}{\definetheorem{#1}{#1}{#2break}}{\definetheorem{#1}{#1}{#2nobreak}}
+		}
+}
+
+% Defines an environment for each desired type
+\pgfkeys{
+	/utils/my Foreach/.code={
+		\definetheorembyparameters{#1}{thm}
+	},
+	/utils/my Foreach/.list={definition,notation,lemma,theorem,corollary,lemcorollary,proposition,algorithm,remark,example,examples,convention,secconvention,counterexample,counterexamples,exercise,observation,fact,reminder,construction,note,warning,goal}
+}
+
+%%% --- Miscthm ---
+
+\definetheorembyparameters{miscthm}{misc}
+
+
+%%% --- Claims ---
+
+\theoremstyle{claim}
+
+\theoremheaderfont{\normalfont\scshape}
+\theorembodyfont{\normalfont\itshape}
+\theoremseparator{:}
+\theorempreskip{\afterclaimspace}
+\theorempostskip{0pt}
+\theoremsymbol{}
+	
+\theoremstyle{claim}
+\newtheorem{nth-claim}[claim]{\protect\GetTranslation{claim}}%
+\newenvironment{claim}[2]%
+	{%
+		\ifblank{#1}{\begin{nth-claim}}{\begin{nth-claim}[#1]}%
+		\ifblank{#2}{}{\label[claim]{\thmlabelprefix#2}}%
+	}%
+	{\end{nth-claim}}%
+\theoremstyle{claimnonumber}
+\renewtheorem{nth-claim*}{\protect\GetTranslation{claim}}
+\newenvironment{claim*}[1]
+	{\ifblank{#1}{\begin{nth-claim*}}{\begin{nth-claim*}[#1]}}
+	{\end{nth-claim*}}
+
+%%% --- Proofs ---
+
+\ifbool{thmbreak}
+	{\theoremstyle{proofbreak}\theoremseparator{:\vspace*{.5\parskip}}}
+	{\theoremstyle{proofnobreak}\theoremseparator{:}}
+
+\theoremheaderfont{\proofheaderfont}
+\theorembodyfont{\normalfont}
+\theorempreskip{\afterthmspace}
+\theorempostskip{\afterthmspace}
+\theoremsymbol{\qedbox}
+
+\newtheorem{proof}{\protect\GetTranslation{proof}}
+
+%%% --- Proofs of claims ---
+
+\theoremstyle{claimproof}
+
+\theoremheaderfont{\normalfont\itshape}
+\theorembodyfont{\normalfont}
+\theoremseparator{:}
+\theorempreskip{\afterclaimspace}
+\theorempostskip{0pt}
+\theoremsymbol{\qedtriangle}
+
+\newtheorem{claimproof}{\protect\GetTranslation{proof}}
+\newtheorem{proofcustomenv}{}
+\newenvironment{proofcustom}[1]%
+	{\begin{proofcustomenv}[#1]}%
+	{\end{proofcustomenv}}%
+
+
+%%% --- Referencing commands ---
+\newcommand{\thmitemref}[2]{\hyperref[#1]{\ref*{#1}~\ref*{#2}}}
+\WithSuffix{\newcommand*}\thmitemref*[2]{\ref*{#1}~\ref*{#2}}
+\newcommand{\thmitemcref}[2]{\namecref{#1}~\hyperref[#1]{\ref*{#1}~\ref*{#2}}}
+\WithSuffix{\newcommand*}\thmitemcref*[2]{\namecref{#1}~\ref*{#1}~\ref*{#2}}
+\newcommand{\claimshortref}[1]{\GetTranslation{Claim-short}~\ref{#1}}
+
+%%% --- Proof list ---
+\newenvironment{prooflist}{\begin{list}{}%
+		{\setlength{\labelwidth}{0pt}\setlength{\labelsep}{4pt}\setlength{\itemindent}{\labelsep}\setlength{\leftmargin}{\labelwidth}\setlength{\itemsep}{0.0cm}%
+			\let\makelabel\prooflistlabel}}%
+	{\end{list}}
+
+\newcommand*{\prooflistlabel}[1]{#1}
+\newcommand*{\plimr}[2]{\item[\glqq#1 $ \imr $ #2\grqq]\mbox{}\nopagebreak\par\nopagebreak}
+\newcommand*{\pliml}[2]{\item[\glqq#1 $ \iml $ #2\grqq]\mbox{}\nopagebreak\par\nopagebreak}
+\newcommand*{\pleq}[2]{\item[\glqq#1 $ \eq $ #2\grqq]\mbox{}\nopagebreak\par\nopagebreak}
+\newcommand*{\pleqthree}[3]{\item[\glqq#1 $ \eq $ #2 $ \eq $ #3\grqq]\mbox{}\nopagebreak\par\nopagebreak}
+\newcommand*{\plsymb}[1]{\item[\glqq#1\grqq]\mbox{}\nopagebreak\par\nopagebreak}
+\newcommand*{\pltext}[1]{\item[\emph{#1}]\mbox{}\nopagebreak\par\nopagebreak}
+\newcommand*{\pltextnobreak}[1]{\item[\emph{#1}]}
+\newcommand*{\plsubs}[2]{\item[\glqq#1 $ \subs $ #2\grqq]\mbox{}\nopagebreak\par\nopagebreak}
+\newcommand*{\plsups}[2]{\item[\glqq#1 $ \sups $ #2\grqq]\mbox{}\nopagebreak\par\nopagebreak}
+
+%%% --- Enumerations ---
+\newenvironment{defenumerate}[1][]{\begin{enumerate}[label=(\alph*),labelsep=5pt,#1]}{\end{enumerate}}
+\newenvironment{thmenumerate}[1][]{\begin{enumerate}[label=(\arabic*),labelsep=5pt,#1]}{\end{enumerate}}
+\newenvironment{lemenumerate}[1][]{\begin{enumerate}[label=(\alph*),labelsep=5pt,#1]}{\end{enumerate}}
+\newenvironment{exenumerate}[1][]{\begin{enumerate}[label=(\arabic*),labelsep=5pt,#1]}{\end{enumerate}}
+\newenvironment{remenumerate}[1][]{\begin{enumerate}[label=(\arabic*),labelsep=5pt,#1]}{\end{enumerate}}
+\newenvironment{proenumerate}[1][]{\begin{enumerate}[label=(\alph*),labelsep=5pt,#1]}{\end{enumerate}}
+\newenvironment{stenumerate}[1][]{\begin{enumerate}[label=(\roman*),labelsep=5pt,#1]}{\end{enumerate}} % For statements, as in "The following statements are equivalent"
+
+\newcommand{\sti}{(i)}\newcommand{\stii}{(ii)}\newcommand{\stiii}{(iii)}\newcommand{\stiv}{(iv)}\newcommand{\stv}{(v)}\newcommand{\stvi}{(vi)}\newcommand{\stvii}{(vii)}
+\newcommand{\thmi}{(1)}\newcommand{\thmii}{(2)}\newcommand{\thmiii}{(3)}\newcommand{\thmiv}{(4)}\newcommand{\thmv}{(5)}\newcommand{\thmvi}{(6)}\newcommand{\thmvii}{(7)}
+\newcommand{\remi}{(1)}\newcommand{\remii}{(2)}\newcommand{\remiii}{(3)}\newcommand{\remiv}{(4)}\newcommand{\remv}{(5)}\newcommand{\remvi}{(6)}\newcommand{\remvii}{(7)}
+\newcommand{\lemi}{(a)}\newcommand{\lemii}{(b)}\newcommand{\lemiii}{(c)}\newcommand{\lemiv}{(d)}\newcommand{\lemv}{(e)}\newcommand{\lemvi}{(f)}\newcommand{\lemvii}{(g)}
