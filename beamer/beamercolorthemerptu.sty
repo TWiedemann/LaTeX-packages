@@ -1,0 +1,76 @@
+
+\mode<presentation>
+
+\definecolor{rptu-bluegrey}{RGB}{80,114,137}
+\definecolor{rptu-greengrey}{RGB}{119,182,186}
+\definecolor{rptu-darkblue}{RGB}{4,44,88}
+\definecolor{rptu-lightblue}{RGB}{106,178,231}
+\definecolor{rptu-darkgreen}{RGB}{0,107,107}
+\definecolor{rptu-lightgreen}{RGB}{38,208,124}
+\definecolor{rptu-violet}{RGB}{76,53,117}
+\definecolor{rptu-pink}{RGB}{209,56,150}
+\definecolor{rptu-red}{RGB}{227,27,76}
+\definecolor{rptu-orange}{RGB}{255,162,82}
+
+\DeclareOptionBeamer{maincolor}{
+	\ifstrequal{#1}{bluegrey}{
+		\colorlet{rptu-main}{rptu-bluegrey}
+		\colorlet{rptu-second}{rptu-greengrey}
+	}{}
+	\ifstrequal{#1}{darkblue}{
+		\colorlet{rptu-main}{rptu-darkblue}
+		\colorlet{rptu-second}{rptu-lightblue}
+	}{}
+	\ifstrequal{#1}{darkgreen}{
+		\colorlet{rptu-main}{rptu-darkgreen}
+		\colorlet{rptu-second}{rptu-lightgreen}
+	}{}
+	\ifstrequal{#1}{violet}{
+		\colorlet{rptu-main}{rptu-violet}
+		\colorlet{rptu-second}{rptu-pink}
+	}{}
+	\ifstrequal{#1}{red}{
+		\colorlet{rptu-main}{rptu-red}
+		\colorlet{rptu-second}{rptu-orange}
+	}{}
+}
+\ExecuteOptionsBeamer{maincolor=darkblue}
+\ProcessOptionsBeamer%\relax
+
+
+
+\setbeamercolor*{rptu-main}{fg=rptu-main}
+\setbeamercolor*{structure}{use=rptu-main, parent=rptu-main, fg=rptu-main.fg!80!black}
+
+%\setbeamercolor*{palette primary}{use=structure,fg=white,bg=rptu-main}
+%%\setbeamercolor*{palette secondary}{use=structure,fg=white,bg=rptu-main!50!rptu-second}
+%\setbeamercolor*{palette secondary}{use=structure,fg=white,bg=rptu-main!70!white}
+%%\setbeamercolor*{palette tertiary}{use=structure,fg=black,bg=rptu-second!90!black}
+%\setbeamercolor*{palette tertiary}{use=structure,fg=black,bg=rptu-main.fg!50!white}
+%\setbeamercolor*{palette quaternary}{fg=white,bg=black}
+
+\setbeamercolor*{palette primary}{use=structure,fg=white,bg=rptu-darkblue}
+\setbeamercolor*{palette secondary}{use=structure,fg=white,bg=rptu-bluegrey}%rptu-bluegrey
+\setbeamercolor*{palette tertiary}{use=structure,fg=white,bg=rptu-darkblue}%,bg=rptu-bluegrey!50
+\setbeamercolor*{palette quaternary}{fg=white,bg=black}
+
+\setbeamercolor*{alerted text}{fg=rptu-lightblue!80!black}%palette secondary.bg
+\setbeamercolor*{sidebar}{use=structure,bg=structure.fg}
+  
+\setbeamercolor*{palette sidebar primary}{use=structure,fg=structure.fg!10}
+\setbeamercolor*{palette sidebar secondary}{fg=white}
+\setbeamercolor*{palette sidebar tertiary}{use=structure,fg=structure.fg!50}
+\setbeamercolor*{palette sidebar quaternary}{fg=white}
+
+\setbeamercolor*{titlelike}{use=structure,fg=structure.fg}
+\setbeamercolor{frametitle}{bg=gray!10!white}
+
+\setbeamercolor*{separation line}{}
+\setbeamercolor*{fine separation line}{}
+
+\setbeamerfont*{alerted text}{series=\itshape}
+
+\setbeamercolor{standout}{fg=rptu-lightblue, bg=rptu-darkblue}
+
+\mode
+<all>

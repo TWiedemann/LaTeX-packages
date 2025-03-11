@@ -1,0 +1,95 @@
+% OBSOLETE: Choose middle entry of footline.
+%\newcommand{\insertfootlinemid}{}
+%\DeclareOptionBeamer{footline}{
+%	\ifstrequal{#1}{title}{\renewcommand{\insertfootlinemid}{\insertshorttitle}}{}
+%	\ifstrequal{#1}{section}{\renewcommand{\insertfootlinemid}{\insertsectionhead}}{}
+%}
+
+% headline=title/section: Headline with presentation title/current section.
+\newbool{headline}
+\booltrue{headline}
+\newcommand{\insertfullheadline}{}
+\DeclareOptionBeamer{headline}{
+	\ifstrequal{#1}{title}{\renewcommand{\insertfullheadline}{\insertshorttitle}}{}
+	\ifstrequal{#1}{section}{\renewcommand{\insertfullheadline}{\insertsectionhead}}{}
+	\ifstrequal{#1}{none}{\boolfalse{headline}}{}
+}
+\newcommand{\flfirst}{}
+\newcommand{\flsecond}{}
+\newcommand{\flthird}{}
+\DeclareOptionBeamer{footline-col1}{
+	\ifstrequal{#1}{author}{\renewcommand{\flfirst}{\usebeamerfont{author in head/foot}\insertshortauthor\expandafter\ifblank\expandafter{\beamer@shortinstitute}{}{~~(\insertshortinstitute)}}}{}%
+	\ifstrequal{#1}{title}{\renewcommand{\flfirst}{\usebeamerfont{title in head/foot}\insertshorttitle}}{}%
+	\ifstrequal{#1}{section}{\renewcommand{\flfirst}{\usebeamerfont{section in head/foot}\insertsectionhead}}{}%
+	\ifstrequal{#1}{subsection}{\renewcommand{\flfirst}{\usebeamerfont{subsection in head/foot}\insertsubsectionhead}}{}%
+	\ifstrequal{#1}{date}{\renewcommand{\flfirst}{\usebeamerfont{date in head/foot}\insertshortdate}}{}%
+}
+\DeclareOptionBeamer{footline-col2}{
+	\ifstrequal{#1}{author}{\renewcommand{\flsecond}{\usebeamerfont{author in head/foot}\insertshortauthor\expandafter\ifblank\expandafter{\beamer@shortinstitute}{}{~~(\insertshortinstitute)}}}{}%
+	\ifstrequal{#1}{title}{\renewcommand{\flsecond}{\usebeamerfont{title in head/foot}\insertshorttitle}}{}%
+	\ifstrequal{#1}{section}{\renewcommand{\flsecond}{\usebeamerfont{section in head/foot}\insertsectionhead}}{}%
+	\ifstrequal{#1}{subsection}{\renewcommand{\flsecond}{\usebeamerfont{subsection in head/foot}\insertsubsectionhead}}{}%
+	\ifstrequal{#1}{date}{\renewcommand{\flsecond}{\usebeamerfont{date in head/foot}\insertshortdate}}{}%
+}
+\DeclareOptionBeamer{footline-col3}{
+	\ifstrequal{#1}{author}{\renewcommand{\flthird}{\usebeamerfont{author in head/foot}\insertshortauthor\expandafter\ifblank\expandafter{\beamer@shortinstitute}{}{~~(\insertshortinstitute)}}}{}%
+	\ifstrequal{#1}{title}{\renewcommand{\flthird}{\usebeamerfont{title in head/foot}\insertshorttitle}}{}%
+	\ifstrequal{#1}{section}{\renewcommand{\flthird}{\usebeamerfont{section in head/foot}\insertsectionhead}}{}%
+	\ifstrequal{#1}{subsection}{\renewcommand{\flthird}{\usebeamerfont{subsection in head/foot}\insertsubsectionhead}}{}%
+	\ifstrequal{#1}{date}{\renewcommand{\flthird}{\usebeamerfont{date in head/foot}\insertshortdate}}{}%
+}
+\ExecuteOptionsBeamer{headline=section}
+\ProcessOptionsBeamer
+
+\mode<presentation>
+
+\setbeamertemplate{page number in head/foot}[framenumber]%
+
+
+
+\defbeamertemplate*{footline}{infolines theme}
+{%
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{palette primary}%
+    \flfirst
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{palette secondary}%
+    \flsecond
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333334\paperwidth,ht=2.25ex,dp=1ex,right]{palette tertiary}%
+    \flthird{}\hspace*{2em}%
+    \usebeamercolor[fg]{page number in head/foot}\usebeamerfont{page number in head/foot}\makebox[2ex]{\usebeamertemplate{page number in head/foot}}\hspace*{2ex} 
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\defbeamertemplate*{headline}{infolines theme}
+{%
+	\ifbool{headline}{
+		\leavevmode%
+		\hbox{%
+		\begin{beamercolorbox}[wd=\paperwidth,ht=2.65ex,dp=1.5ex,center]{palette tertiary}%
+			\usebeamerfont{section in head/foot}\insertfullheadline
+		\end{beamercolorbox}}%
+		\vskip0pt%
+	}{}
+}
+
+%\defbeamertemplate*{headline}{infolines theme}
+%{%
+%  \leavevmode%
+%  \hbox{%
+%  \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.65ex,dp=1.5ex,right]{section in head/foot}%
+%    \usebeamerfont{section in head/foot}\insertsectionhead\hspace*{2ex}
+%  \end{beamercolorbox}%
+%  \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.65ex,dp=1.5ex,left]{subsection in head/foot}%
+%    \usebeamerfont{subsection in head/foot}\hspace*{2ex}\insertsubsectionhead
+%  \end{beamercolorbox}}%
+%  \vskip0pt%
+%}
+
+\setbeamersize{text margin left=1em,text margin right=1em}
+
+\mode
+<all>

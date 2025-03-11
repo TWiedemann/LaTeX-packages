@@ -1,0 +1,37 @@
+
+\mode<presentation>
+
+\definecolor{jlu-blue}{RGB}{62,105,172}
+\definecolor{jlu-komp}{RGB}{94,68,15} % complementary to jlu-blue (180 degrees)
+\definecolor{jlu-purple}{RGB}{76,57,184} % similar to jlu-blue
+%\definecolor{jlu-lite}{RGB}{57,172,184}
+\definecolor{jlu-lite}{RGB}{60,147,194} % similar to jlu-blue
+\definecolor{jlu-green}{RGB}{57,171,53}
+
+\setbeamercolor*{jlu-blue}{fg=jlu-blue}
+\setbeamercolor*{structure}{use=jlu-blue, parent=jlublue, fg=jlu-blue.fg!80!black}
+
+\setbeamercolor*{alerted text}{fg=red!70!jlu-blue}
+
+\setbeamercolor*{palette primary}{use=structure,fg=black,bg=jlu-blue.fg!50!white}
+\setbeamercolor*{palette secondary}{use=structure,fg=white,bg=jlu-blue.fg!70!white}
+\setbeamercolor*{palette tertiary}{use=structure,fg=white,bg=jlu-blue.fg}
+\setbeamercolor*{palette quaternary}{fg=white,bg=black}
+
+\setbeamercolor*{sidebar}{use=structure,bg=structure.fg}
+  
+\setbeamercolor*{palette sidebar primary}{use=structure,fg=structure.fg!10}
+\setbeamercolor*{palette sidebar secondary}{fg=white}
+\setbeamercolor*{palette sidebar tertiary}{use=structure,fg=structure.fg!50}
+\setbeamercolor*{palette sidebar quaternary}{fg=white}
+
+\setbeamercolor*{titlelike}{use=structure,fg=structure.fg}
+\setbeamercolor{frametitle}{bg=gray!10!white}
+
+\setbeamercolor*{separation line}{}
+\setbeamercolor*{fine separation line}{}
+
+\setbeamercolor{standout}{use = palette secondary, parent=palette secondary}
+
+\mode
+<all>

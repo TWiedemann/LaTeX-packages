@@ -1,0 +1,31 @@
+%\DeclareOptionBeamer{footline}{\PassOptionsToPackage{footline=#1}{beamerouterthemeinfolines-custom}}
+\DeclareOptionBeamer{headline}{\PassOptionsToPackage{headline=#1}{beamerouterthemeinfolines-custom}}
+\DeclareOptionBeamer{footline-col1}{\PassOptionsToPackage{footline-col1=#1}{beamerouterthemeinfolines-custom}}
+\DeclareOptionBeamer{footline-col2}{\PassOptionsToPackage{footline-col2=#1}{beamerouterthemeinfolines-custom}}
+\DeclareOptionBeamer{footline-col3}{\PassOptionsToPackage{footline-col3=#1}{beamerouterthemeinfolines-custom}}
+\ExecuteOptionsBeamer{footline-col1=author, footline-col2=title, footline-col3=section}
+\ProcessOptionsBeamer
+
+\mode<presentation>
+
+\useinnertheme[shadow=false]{rounded}
+\useoutertheme{infolines-custom}
+\usecolortheme{jlu}
+
+\setbeamerfont{block title}{size={}}
+\setbeamercolor{titlelike}{parent=structure,bg=white}
+
+%% Inner Layout
+\setbeamercolor{enumerate item}{parent = normal text} % Normal color for enumerate items
+\setbeamercolor{enumerate subitem}{parent = normal text}
+\setbeamerfont{itemize/enumerate subbody}{size=} % Nested enumerate/itemize does not get smaller font size
+\setbeamerfont{itemize/enumerate subsubbody}{size=}
+
+%% Frame Layout
+\setbeamertemplate{navigation symbols}{} % No navigation bar
+\setbeamertemplate{enumerate items}[default] % No balls
+\setbeamertemplate{frametitle}[default][center] % Frame titles centered
+\setbeamertemplate{blocks}[rounded][shadow=false] % Rounded boxes without shadows
+
+\mode
+<all>
