@@ -2,7 +2,7 @@
 \ProvidesClass{homework-torben}
 \RequirePackage{etoolbox}
 
-%%% Package options
+%%% ----- Package options -----
 
 %% no-solutions: Solutions are not printed and altered title
 \newbool{solutions}
@@ -10,11 +10,13 @@
 \DeclareOption{no-solutions}{
 	\boolfalse{solutions}
 }
+%% solution-doctitle-newline: The string "Solutions" (or similar) in the document title is printed in a new line
 \newbool{solution-doctitle-newline}
 \boolfalse{solution-doctitle-newline}
 \DeclareOption{solution-doctitle-newline}{
 	\booltrue{solution-doctitle-newline}
 }
+%% exam: Exam mode
 \newbool{exam}
 \boolfalse{exam}
 \DeclareOption{exam}{
@@ -25,6 +27,8 @@
 %% Process package options (after all options have been defined)
 \ProcessOptions\relax
 
+%%% ----- End of package options -----
+
 %%% Based on article class
 \LoadClass{article}
 
@@ -34,17 +38,44 @@
 \RequirePackage[autostyle=true, german=quotes, english=american]{csquotes}
 \RequirePackage[shortlabels]{enumitem}
 \RequirePackage{babel}
+\RequirePackage{fancyhdr}
 \RequirePackage{translations}
+\RequirePackage{tikz}
 
 %%% Misc
-\pagestyle{empty} % No page numbers
 \setlist[enumerate]{label=(\alph*)}
 
-%%% Global variables
-%% Always needed
-\newcommand{\semestervar}{}
+%%% ----- Page styles -----
+%% Define page styles for exams
+\fancypagestyle{backside}{
+	\fancyhead{}
+	\fancyfoot[C]{\GetTranslation{backside}}
+	\renewcommand{\headrulewidth}{0pt}
+	\renewcommand{\footrulewidth}{0.4pt}
+}
+\fancypagestyle{pagenum}{
+	\fancyhead{}
+	\fancyfoot[C]{\thepage}
+	\renewcommand{\headrulewidth}{0pt}
+	\renewcommand{\footrulewidth}{0pt}
+}
+%% Set page style
+\ifbool{solutions}{
+	\pagestyle{pagenum} % Solutions of exams or exercise sheets
+}{
+	\ifbool{exam}{
+		\pagestyle{backside} % Exams
+	}{
+		\pagestyle{empty} % Exercise sheets
+	}
+}
+%%% ----- End of page styles -----
+
+%%% ----- Global variables and user commands -----
+%% For all document types (exam, homework, solutions)
+\newcommand{\semestervar}{} % Current semester
 \newcommand{\semester}[1]{\renewcommand{\semestervar}{#1}}
-\newcommand{\coursenamevar}{}
+\newcommand{\coursenamevar}{} % Course name
 \newcommand{\coursename}[1]{\renewcommand{\coursenamevar}{#1}}
 \ifbool{solutions}{% Title addition for solutions
 		\ifbool{solution-doctitle-newline}{
@@ -55,21 +86,26 @@
 }{%
 	\newcommand{\solutiontitleaddition}{}
 }
+\newcommand*\points[1]{\tikz[baseline=(char.base)]{ % Points
+	\node[shape=circle,draw,inner sep=1pt] (char) {#1};}
+}
 %% Only in homework mode (default)
 \newcounter{sheet}
-\newcommand{\sheetnumber}[1]{\setcounter{sheet}{#1}}
-\newcommand{\deadlinevar}{}
+\newcommand{\sheetnumber}[1]{\setcounter{sheet}{#1}} % Sheet number
+\newcommand{\deadlinevar}{} % Deadline for submission
 \newcommand{\deadline}[1]{\renewcommand{\deadlinevar}{#1}}
 %% Only in exam mode
-\newcommand{\examnamevar}{}
+\newcommand{\examnamevar}{} % Name of the exam (e.g. "Abschlussklausur")
 \newcommand{\examname}[1]{\renewcommand{\examnamevar}{#1}}
-\newcommand{\timelimitvar}{}
+\newcommand{\timelimitvar}{} % Time limit for the exam
 \newcommand{\timelimit}[1]{\renewcommand{\timelimitvar}{#1}}
+%%% ----- End of global variables and user commands -----
 
-%%% Multilanguage support
+
+%%% ----- Multilanguage support -----
 \DeclareTranslation{English}{exercise}{Exercise}
 \DeclareTranslation{German}{exercise}{Aufgabe}
-\DeclareTranslation{English}{solution}{Solution proposal}
+\DeclareTranslation{English}{solution}{Proposed solution}
 \DeclareTranslation{German}{solution}{Lösungsvorschlag}
 \DeclareTranslation{English}{sheet}{Sheet}
 \DeclareTranslation{German}{sheet}{Blatt}
@@ -82,8 +118,11 @@
 \DeclareTranslation{German}{solution-doctitle}{Lösungen}
 \DeclareTranslation{English}{time-limit}{Time limit}
 \DeclareTranslation{German}{time-limit}{Bearbeitungszeit}
+\DeclareTranslation{English}{backside}{Note reverse side!}
+\DeclareTranslation{German}{backside}{Rückseite beachten!}
+%%% ----- End of multilanguage support -----
 
-%%% Title header
+%%% ----- Title header -----
 \renewcommand{\maketitle}{
 	\begin{center}
 		\bfseries\LARGE\coursenamevar{}: 
@@ -108,8 +147,9 @@
 	\end{center}
 	\addvspace{0.5cm}
 }
+%%% ----- End of title header -----
 
-%%% Theorem-like environments
+%%% ----- Theorem-like environments -----
 %% Exercise counter
 \ifbool{exam}{ % In homework mode (default), the sheet number is part of the exercise numbering
 	\newcounter{ex}
@@ -146,6 +186,7 @@
 	\renewenvironment{solution}{}{}
 	\excludecomment{solution}
 }
+%%% ----- End of theorem-like environments -----
 
 %%% Live exercises
 
