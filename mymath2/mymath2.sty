@@ -250,6 +250,7 @@
 \newcommand*{\mapbij}[5]{\ifblank{#1}{}{#1\mapcolon} \ifblank{#2}{}{#2 \arbij #3} \ifblank{#4}{}{\ifblank{#2}{}{,} #4 \mapsto #5}}
 \def\dashmapsto{\mapstochar\dashrightarrow}
 \newcommand*{\mappart}[5]{\ifblank{#1}{}{#1\mapcolon} \ifblank{#2}{}{#2 \dashrightarrow #3} \ifblank{#4}{}{\ifblank{#2}{}{,} #4 \dashmapsto #5}}
+\newcommand*{\mapgeneral}[5]{\ifblank{#1}{}{#1\mapcolon} \ifblank{#2}{}{#2 \rightsquigarrow #3} \ifblank{#4}{}{\ifblank{#2}{}{,} #4 \mapsto #5}}
 \newcommand*{\grindex}[2]{[#1:#2]}
 \newcommand{\id}{\mathord{\mathrm{id}}}
 \newcommand{\ord}{o}
