@@ -12,6 +12,7 @@
 \definecolor{rptu-red}{RGB}{227,27,76}
 \definecolor{rptu-orange}{RGB}{255,162,82}
 
+% Main color is not actually used anywhere. We use a custom color scheme mostly based on rptu-darkblue and rptu-bluegrey/rptu-greengrey
 \DeclareOptionBeamer{maincolor}{
 	\ifstrequal{#1}{bluegrey}{
 		\colorlet{rptu-main}{rptu-bluegrey}
@@ -41,13 +42,6 @@
 
 \setbeamercolor*{rptu-main}{fg=rptu-main}
 \setbeamercolor*{structure}{use=rptu-main, parent=rptu-main, fg=rptu-main.fg!80!black}
-
-%\setbeamercolor*{palette primary}{use=structure,fg=white,bg=rptu-main}
-%%\setbeamercolor*{palette secondary}{use=structure,fg=white,bg=rptu-main!50!rptu-second}
-%\setbeamercolor*{palette secondary}{use=structure,fg=white,bg=rptu-main!70!white}
-%%\setbeamercolor*{palette tertiary}{use=structure,fg=black,bg=rptu-second!90!black}
-%\setbeamercolor*{palette tertiary}{use=structure,fg=black,bg=rptu-main.fg!50!white}
-%\setbeamercolor*{palette quaternary}{fg=white,bg=black}
 
 \setbeamercolor*{palette primary}{use=structure,fg=white,bg=rptu-darkblue}
 \setbeamercolor*{palette secondary}{use=structure,fg=white,bg=rptu-bluegrey}%rptu-bluegrey
