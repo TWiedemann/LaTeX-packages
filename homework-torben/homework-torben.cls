@@ -1,31 +1,48 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{homework-torben}
+\RequirePackage{lastpage} % for \pageref{LastPage}
+\RequirePackage{xkeyval} % Key-value package options
 \RequirePackage{etoolbox}
+
+%%% ----- Legacy information ---
+% Exercise sheets for "Algebraische Strukturen WS24/25" and "Cryptography SS25" need to use "style=obsolete1". Further, the key "no-solutions" used in these sheets is deprecated (but still available) and should be replaced by "solutions=false".
 
 %%% ----- Package options -----
 
 %% no-solutions: Solutions are not printed and altered title
 \newbool{solutions}
 \booltrue{solutions}
+\DeclareOptionX{solutions}[true]{\setbool{solutions}{#1}}
+\ExecuteOptionsX{solutions=true} % Default
+% Legacy option
 \DeclareOption{no-solutions}{
 	\boolfalse{solutions}
 }
-%% solution-doctitle-newline: The string "Solutions" (or similar) in the document title is printed in a new line
-\newbool{solution-doctitle-newline}
-\boolfalse{solution-doctitle-newline}
-\DeclareOption{solution-doctitle-newline}{
-	\booltrue{solution-doctitle-newline}
-}
+%% Style: classic (no logo) or logo-header (logo and names in header on each page) or obsolete1 (used in WS24, SS25)
+\newcommand{\docstyle}{}
+\DeclareOptionX{style}{\renewcommand{\docstyle}{#1}}
+\ExecuteOptionsX{style=classic}
+%% Font for "Submission until"
+\newcommand{\timefont}{}
+\DeclareOptionX{time-font}{\renewcommand{\timefont}{#1}}
+\ExecuteOptionsX{time-font=\itshape}
 %% exam: Exam mode
 \newbool{exam}
 \boolfalse{exam}
 \DeclareOption{exam}{
 	\booltrue{exam}
 }
+%% Legay option: solution-doctitle-newline: The string "Solutions" (or similar) in the document title is printed in a new line. Only applies in style "obsolete1"
+\newbool{solution-doctitle-newline}
+\boolfalse{solution-doctitle-newline}
+\DeclareOption{solution-doctitle-newline}{
+	\booltrue{solution-doctitle-newline}
+}
 %% Pass unknown options to article class
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 %% Process package options (after all options have been defined)
 \ProcessOptions\relax
+\ProcessOptionsX\relax
 
 %%% ----- End of package options -----
 
@@ -45,34 +62,10 @@
 %%% Misc
 \setlist[enumerate]{label=(\alph*)}
 
-%%% ----- Page styles -----
-%% Define page styles for exams
-\fancypagestyle{backside}{
-	\fancyhead{}
-	\fancyfoot[C]{\GetTranslation{backside}}
-	\renewcommand{\headrulewidth}{0pt}
-	\renewcommand{\footrulewidth}{0.4pt}
-}
-\fancypagestyle{pagenum}{
-	\fancyhead{}
-	\fancyfoot[C]{\thepage}
-	\renewcommand{\headrulewidth}{0pt}
-	\renewcommand{\footrulewidth}{0pt}
-}
-%% Set page style
-\ifbool{solutions}{
-	\pagestyle{pagenum} % Solutions of exams or exercise sheets
-}{
-	\ifbool{exam}{
-		\pagestyle{backside} % Exams
-	}{
-		\pagestyle{empty} % Exercise sheets
-	}
-}
-%%% ----- End of page styles -----
-
 %%% ----- Global variables and user commands -----
 %% For all document types (exam, homework, solutions)
+\newcommand{\unilogovar}{} % Logo of the university
+\newcommand{\unilogo}[1]{\renewcommand{\unilogovar}{#1}}
 \newcommand{\semestervar}{} % Current semester
 \newcommand{\semester}[1]{\renewcommand{\semestervar}{#1}}
 \newcommand{\coursenamevar}{} % Course name
@@ -101,6 +94,46 @@
 \newcommand{\timelimit}[1]{\renewcommand{\timelimitvar}{#1}}
 %%% ----- End of global variables and user commands -----
 
+%%% ----- Page styles -----
+%% Head rule width
+\ifdefstring{\docstyle}{logo-header}{
+	\renewcommand{\headrulewidth}{0.4pt}
+}{
+	\renewcommand{\headrulewidth}{0pt}
+}
+%% Define page styles
+\fancypagestyle{logo-header}{
+	\fancyhead[L]{\unilogovar}
+	\fancyhead[C]{\semestervar}
+	\fancyhead[R]{\@author}
+}
+\fancypagestyle{backside}{
+	\fancyfoot{}
+	\fancyfoot[C]{\GetTranslation{backside}}
+	\fancyfoot[R]{\thepage/\pageref*{LastPage}}
+	\renewcommand{\footrulewidth}{0.4pt}
+}
+\fancypagestyle{pagenum}{
+	\fancyfoot{}
+	\fancyfoot[C]{\thepage/\pageref*{LastPage}}
+	\renewcommand{\footrulewidth}{0pt}
+}
+%% Set page style
+% Footer
+\ifbool{solutions}{
+	\pagestyle{pagenum} % Solutions of exams or exercise sheets
+}{
+	\ifbool{exam}{
+		\pagestyle{backside} % Exams
+	}{
+		\pagestyle{empty} % Exercise sheets
+	}
+}
+% Header
+\ifdefstring{\docstyle}{logo-header}{
+	\pagestyle{logo-header}
+}{}
+%%% ----- End of page styles -----
 
 %%% ----- Multilanguage support -----
 \DeclareTranslation{English}{exercise}{Exercise}
@@ -124,28 +157,86 @@
 
 %%% ----- Title header -----
 \renewcommand{\maketitle}{
-	\begin{center}
-		\bfseries\LARGE\coursenamevar{}: 
-		\ifbool{exam}{
-			\examnamevar\solutiontitleaddition
-		}{
-			\GetTranslation{sheet}~\thesheet\solutiontitleaddition
-		}
-		
-		\addvspace{0.1cm}
-		\normalsize\normalfont\@author\qquad\qquad\semestervar
-		
-		\addvspace{0.1cm}
-		\ifbool{exam}{
-			\GetTranslation{time-limit}: \timelimitvar
-		}{
-			\GetTranslation{deadline}: \deadlinevar
-		}
-		
-		\vspace{0.5cm}
-%		\hrule
-	\end{center}
-	\addvspace{0.5cm}
+	\ifdefstring{\docstyle}{obsolete1}{%
+		\begin{center}
+			\bfseries\LARGE\coursenamevar{}: 
+			\ifbool{exam}{
+				\examnamevar\solutiontitleaddition
+			}{
+				\GetTranslation{sheet}~\thesheet\solutiontitleaddition
+			}
+			
+			\addvspace{0.1cm}
+			\normalsize\normalfont\@author\qquad\qquad\semestervar
+			
+			\addvspace{0.1cm}%
+			\timefont%
+			\ifbool{exam}{
+				\GetTranslation{time-limit}: \timelimitvar
+			}{
+				\GetTranslation{deadline}: \deadlinevar
+			}
+			
+			\vspace{0.5cm}
+		\end{center}
+		\addvspace{0.5cm}
+	}{}%
+	\ifdefstring{\docstyle}{classic}{%
+		\begin{center}
+			\bfseries\LARGE\coursenamevar{}
+
+			% Subtitle "Solutions", if necessary
+			\Large --%
+			\ifbool{exam}{
+				\examnamevar%
+			}{
+				\GetTranslation{sheet}~\thesheet%
+			}%
+			\ifbool{solutions}{%
+				: \GetTranslation{solution-doctitle}%
+			}{} --
+			
+			\addvspace{0.1cm}
+			\normalsize\normalfont\@author\qquad\qquad\semestervar
+			
+			\addvspace{0.1cm}%
+			\timefont%
+			\ifbool{exam}{
+				\GetTranslation{time-limit}: \timelimitvar
+			}{
+				\GetTranslation{deadline}: \deadlinevar
+			}
+			
+			\vspace{0.5cm}
+		\end{center}
+		\addvspace{0.5cm}
+	}{}%
+	\ifdefstring{\docstyle}{logo-header}{%
+		\begin{center}
+			% Course title
+			\bfseries\LARGE\coursenamevar
+			
+			% Subtitle "Solutions", if necessary
+			\Large --%
+			\ifbool{exam}{
+				\examnamevar%
+			}{
+				\GetTranslation{sheet}~\thesheet%
+			}%
+			\ifbool{solutions}{%
+				: \GetTranslation{solution-doctitle}%
+			}{} --
+
+			% Time for submission
+			\normalfont\normalsize\timefont\ifbool{solutions}{}{
+				\ifbool{exam}{
+					\GetTranslation{time-limit}: \timelimitvar
+				}{
+					\GetTranslation{deadline}: \deadlinevar
+				}
+			}
+		\end{center}
+	}{}%
 }
 %%% ----- End of title header -----
 
