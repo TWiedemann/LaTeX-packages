@@ -103,6 +103,7 @@
 }
 %% Define page styles
 \fancypagestyle{logo-header}{
+	\setlength{\headheight}{1.5cm}
 	\fancyhead[L]{\unilogovar}
 	\fancyhead[C]{\semestervar}
 	\fancyhead[R]{\@author}
