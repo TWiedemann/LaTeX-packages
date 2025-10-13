@@ -165,21 +165,16 @@
 
 % Ableitungen etc.
 \newcommand{\del}[1]{\, \mathrm{d} #1}
-\newcommand{\diff}[1]{\frac{\mathrm{d}}{\del{#1}}}
-\newcommand{\diffn}[2]{\frac{\mathrm{d}^{#1}}{\del{#2}^{#1}}}
-\newcommand{\pardiff}[1]{\frac{\partial}{\partial #1}}
-\newcommand{\pardiffn}[2]{\frac{\partial^{#1}}{\partial {#2}^{#1}}}
+\newcommand{\diff}[2]{\frac{\mathrm{d} #1}{\mathrm{d} #2}}
+\newcommand{\pardiff}[2]{\frac{\partial #1}{\partial #2}}
 \newcommand{\dx}{\del{x}}
 \newcommand{\dy}{\del{y}}
 \newcommand{\dz}{\del{z}}
 \newcommand{\dt}{\del{t}}
 \newcommand{\dmu}{\del{\mu}}
-\newcommand{\diffx}{\diff{x}}
-\newcommand{\pardiffx}{\pardiff{x}}
 \newcommand{\difft}{\diff{t}}
 \newcommand{\lando}{o}
 \newcommand{\landO}{\mathcal{O}}
-\newcommand{\grad}{\nabla}
 
 % Limiten
 \newcommand{\limnti}{\lim_{n\ar\infty}}
