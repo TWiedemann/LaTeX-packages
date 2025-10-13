@@ -51,7 +51,8 @@
 
 %%% Packages
 \RequirePackage[left=4cm,right=4cm,top=2cm,bottom=3cm]{geometry}
-\RequirePackage{ntheorem,comment,parskip}
+\RequirePackage[thmmarks]{ntheorem}
+\RequirePackage{comment,parskip}
 \RequirePackage[autostyle=true, german=quotes, english=american]{csquotes}
 \RequirePackage[shortlabels]{enumitem}
 \RequirePackage{babel}
@@ -103,7 +104,7 @@
 }
 %% Define page styles
 \fancypagestyle{logo-header}{
-	\setlength{\headheight}{1.5cm}
+	\setlength{\headheight}{52.55pt}
 	\fancyhead[L]{\unilogovar}
 	\fancyhead[C]{\semestervar}
 	\fancyhead[R]{\@author}
@@ -141,6 +142,10 @@
 \DeclareTranslation{German}{exercise}{Aufgabe}
 \DeclareTranslation{English}{solution}{Proposed solution}
 \DeclareTranslation{German}{solution}{Lösungsvorschlag}
+\DeclareTranslation{English}{claim}{Claim}
+\DeclareTranslation{German}{claim}{Behauptung}
+\DeclareTranslation{English}{claimproof}{Proof of claim}
+\DeclareTranslation{German}{claimproof}{Beweis der Behauptung}
 \DeclareTranslation{English}{sheet}{Sheet}
 \DeclareTranslation{German}{sheet}{Blatt}
 \DeclareTranslation{English}{deadline}{Submission until}
@@ -250,11 +255,17 @@
 	\newcounter{ex}[sheet]
 	\renewcommand{\theex}{\thesheet.\arabic{ex}}
 }
+\newcounter{claimcounter}
+\counterwithin{claimcounter}{ex}
+\renewcommand{\theclaimcounter}{\arabic{claimcounter}}
 
 %% Theorem styles
 \newtheoremstyle{exercise}% Exactly like "plain" in ntheorem
 {\item[\hskip\labelsep \theorem@headerfont ##1\ ##2\theorem@separator]}%
 {\item[\hskip\labelsep \theorem@headerfont ##1\ ##2\ ##3\theorem@separator]}%
+\newtheoremstyle{exercisenonumber}%
+	{\item[\hskip\labelsep \theorem@headerfont ##1\theorem@separator]}%
+	{\item[\hskip\labelsep \theorem@headerfont ##1\ (##3)\theorem@separator]}%
 \newtheoremstyle{solution}% Like "exercise", but 1. no number and 2. if optional name is given, only the optional name is displayed
 {\item[\hskip\labelsep \theorem@headerfont ##1\theorem@separator]}%
 {\item[\hskip\labelsep \theorem@headerfont ##3\theorem@separator]}%
@@ -263,17 +274,39 @@
 \theorembodyfont{\normalfont}
 \theoremsymbol{}
 
+% Exercise (numbered and unnumbered)
 \theoremstyle{exercise}
 \theoremheaderfont{\normalfont\bfseries}
 \theoremseparator{.}
 \newtheorem{exercise}[ex]{\protect\GetTranslation{exercise}}
+\theoremstyle{exercisenonumber}
+\renewtheorem{exercise*}{\protect\GetTranslation{exercise}}
 
+% Claim (numbered and unnumbered)
+\theoremstyle{exercise}
+\theoremheaderfont{\normalfont\scshape}
+\theoremseparator{:}
+\newtheorem{claim}[claimcounter]{\protect\GetTranslation{claim}}
+\theoremstyle{exercisenonumber}
+\renewtheorem{claim*}{\protect\GetTranslation{claim}}
+
+% Solution
 \theoremstyle{solution}
 \theoremheaderfont{\normalfont\bfseries\itshape}
 \theoremseparator{:}
 \newtheorem{solution}{\protect\GetTranslation{solution}}
 
-% Do not print solutions depending on the bool "solutions"
+% Proof of claim
+\theoremstyle{solution}
+\newcommand{\qedtriangle}{\hspace{0.5cm}\begin{tikzpicture}[scale=0.23]
+	\draw (0,0) -- (1,0) -- (0,1) -- cycle;
+\end{tikzpicture}}
+\theoremsymbol{\qedtriangle}
+\theoremheaderfont{\normalfont\itshape}
+\theoremseparator{:}
+\newtheorem{claimproof}{\protect\GetTranslation{claimproof}}
+
+% Depending on the bool "solutions", do not print solutions
 \ifbool{solutions}{}{
 	\renewenvironment{solution}{}{}
 	\excludecomment{solution}
