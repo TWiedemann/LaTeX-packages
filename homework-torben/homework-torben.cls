@@ -205,15 +205,15 @@
 			\addvspace{0.1cm}
 			\normalsize\normalfont\@author\qquad\qquad\semestervar
 			
-			\addvspace{0.1cm}%
-			\timefont%
-			\ifbool{exam}{
-				\GetTranslation{time-limit}: \timelimitvar
-			}{
-				\GetTranslation{deadline}: \deadlinevar
+			%\addvspace{0.1cm}%
+			% Time for submission
+			\normalfont\normalsize\timefont\ifbool{solutions}{}{
+				\ifbool{exam}{
+					\GetTranslation{time-limit}: \timelimitvar
+				}{
+					\GetTranslation{deadline}: \deadlinevar
+				}
 			}
-			
-			\vspace{0.5cm}
 		\end{center}
 		\addvspace{0.5cm}
 	}{}%
@@ -234,12 +234,12 @@
 			}{} --
 
 			% Time for submission
-			\normalfont\normalsize\timefont\ifbool{solutions}{}{
-				\ifbool{exam}{
-					\GetTranslation{time-limit}: \timelimitvar
-				}{
-					\GetTranslation{deadline}: \deadlinevar
-				}
+			\normalfont\normalsize\timefont\ifbool{solutions}{}{%
+				\ifbool{exam}{%
+					\GetTranslation{time-limit}: \timelimitvar%
+				}{%
+					\GetTranslation{deadline}: \deadlinevar%
+				}%
 			}
 		\end{center}
 		\addvspace{0.5cm}
@@ -272,6 +272,14 @@
 {\item[\hskip\labelsep \theorem@headerfont ##3\theorem@separator]}%
 
 %% Exercise and solution environment
+
+% Length
+\newlength{\afterthmspace}
+\newlength{\afterclaimspace}
+\setlength{\afterthmspace}{0.7\baselineskip plus 0.2\baselineskip minus 0.1\baselineskip} % Placed after and before every unboxed theorem
+\setlength{\afterclaimspace}{\parskip} % Placed after and before claims and proofs of claims
+
+% Standard settings for all environments
 \theorembodyfont{\normalfont}
 \theoremsymbol{}
 
@@ -279,7 +287,10 @@
 \theoremstyle{exercise}
 \theoremheaderfont{\normalfont\bfseries}
 \theoremseparator{.}
+\theorempreskip{\afterthmspace}
+\theorempostskip{\afterthmspace}
 \newtheorem{exercise}[ex]{\protect\GetTranslation{exercise}}
+
 \theoremstyle{exercisenonumber}
 \renewtheorem{exercise*}{\protect\GetTranslation{exercise}}
 
@@ -287,7 +298,10 @@
 \theoremstyle{exercise}
 \theoremheaderfont{\normalfont\scshape}
 \theoremseparator{:}
+\theorempreskip{\afterclaimspace}
+\theorempostskip{\afterclaimspace}
 \newtheorem{claim}[claimcounter]{\protect\GetTranslation{claim}}
+
 \theoremstyle{exercisenonumber}
 \renewtheorem{claim*}{\protect\GetTranslation{claim}}
 
@@ -295,6 +309,8 @@
 \theoremstyle{solution}
 \theoremheaderfont{\normalfont\bfseries\itshape}
 \theoremseparator{:}
+\theorempreskip{\afterthmspace}
+\theorempostskip{\afterthmspace}
 \newtheorem{solution}{\protect\GetTranslation{solution}}
 
 % Proof of claim
@@ -305,6 +321,8 @@
 \theoremsymbol{\qedtriangle}
 \theoremheaderfont{\normalfont\itshape}
 \theoremseparator{:}
+\theorempreskip{\afterclaimspace}
+\theorempostskip{\afterclaimspace}
 \newtheorem{claimproof}{\protect\GetTranslation{claimproof}}
 
 % Depending on the bool "solutions", do not print solutions
