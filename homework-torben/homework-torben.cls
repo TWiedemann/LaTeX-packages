@@ -39,7 +39,7 @@
 	\booltrue{solution-doctitle-newline}
 }
 %% Pass unknown options to article class
-\DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
+\DeclareOptionX*{\PassOptionsToClass{\CurrentOption}{article}}
 %% Process package options (after all options have been defined)
 \ProcessOptions\relax
 \ProcessOptionsX\relax
@@ -242,6 +242,7 @@
 				}
 			}
 		\end{center}
+		\addvspace{0.5cm}
 	}{}%
 }
 %%% ----- End of title header -----
@@ -313,7 +314,27 @@
 }
 %%% ----- End of theorem-like environments -----
 
-%%% Live exercises
+%%% ----- Proof list environment for proofs with different "canonical" components such as "(1) \implies (2)" or "A \subset B" -----
+
+\newenvironment{prooflist}{\begin{list}{}%
+		{\setlength{\labelwidth}{0pt}\setlength{\labelsep}{4pt}\setlength{\itemindent}{\labelsep}\setlength{\leftmargin}{\labelwidth}\setlength{\itemsep}{0.0cm}%
+			\let\makelabel\prooflistlabel}}%
+	{\end{list}}
+
+\newcommand*{\prooflistlabel}[1]{#1}
+\newcommand*{\plimr}[2]{\item[\glqq#1 $ \imr $ #2\grqq]\mbox{}\nopagebreak\par\nopagebreak}
+\newcommand*{\pliml}[2]{\item[\glqq#1 $ \iml $ #2\grqq]\mbox{}\nopagebreak\par\nopagebreak}
+\newcommand*{\pleq}[2]{\item[\glqq#1 $ \eq $ #2\grqq]\mbox{}\nopagebreak\par\nopagebreak}
+\newcommand*{\pleqthree}[3]{\item[\glqq#1 $ \eq $ #2 $ \eq $ #3\grqq]\mbox{}\nopagebreak\par\nopagebreak}
+\newcommand*{\plsymb}[1]{\item[\glqq#1\grqq]\mbox{}\nopagebreak\par\nopagebreak}
+\newcommand*{\pltext}[1]{\item[\emph{#1}]\mbox{}\nopagebreak\par\nopagebreak}
+\newcommand*{\pltextnobreak}[1]{\item[\emph{#1}]}
+\newcommand*{\plsubs}[2]{\item[\glqq#1 $ \subs $ #2\grqq]\mbox{}\nopagebreak\par\nopagebreak}
+\newcommand*{\plsups}[2]{\item[\glqq#1 $ \sups $ #2\grqq]\mbox{}\nopagebreak\par\nopagebreak}
+
+%%% ----- End of proof list environment -----
+
+%%% ----- Live exercises -----
 
 \newcommand{\makeliveexercisestitle}{
 	\vspace{0.5cm}
