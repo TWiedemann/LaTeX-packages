@@ -1,6 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{homework-torben}
-\RequirePackage{lastpage} % for \pageref{LastPage}
 \RequirePackage{xkeyval} % Key-value package options
 \RequirePackage{etoolbox}
 
@@ -18,6 +17,12 @@
 \DeclareOption{no-solutions}{
 	\boolfalse{solutions}
 }
+
+%% cleveref: This option should be given if cleveref is used. It ensures that crefnames are defined
+\DeclareOptionX{cleveref}[true]{\AddToHook{begindocument}{
+	\crefname{exercise}{\GetTranslation{exercise}}{\GetTranslation{exercise-plural}}
+	\crefname{solution}{\GetTranslation{solution}}{\GetTranslation{solution-plural}}
+}}
 %% Style: classic (no logo) or logo-header (logo and names in header on each page) or obsolete1 (used in WS24, SS25)
 \newcommand{\docstyle}{}
 \DeclareOptionX{style}{\renewcommand{\docstyle}{#1}}
@@ -32,7 +37,7 @@
 \DeclareOption{exam}{
 	\booltrue{exam}
 }
-%% Legay option: solution-doctitle-newline: The string "Solutions" (or similar) in the document title is printed in a new line. Only applies in style "obsolete1"
+%% Legacy option: solution-doctitle-newline: The string "Solutions" (or similar) in the document title is printed in a new line. Only applies in style "obsolete1"
 \newbool{solution-doctitle-newline}
 \boolfalse{solution-doctitle-newline}
 \DeclareOption{solution-doctitle-newline}{
@@ -50,6 +55,7 @@
 \LoadClass{article}
 
 %%% Packages
+\RequirePackage{lastpage} % for \pageref{LastPage}
 \RequirePackage[left=4cm,right=4cm,top=2cm,bottom=3cm]{geometry}
 \RequirePackage[thmmarks]{ntheorem}
 \RequirePackage{comment,parskip}
@@ -140,8 +146,12 @@
 %%% ----- Multilanguage support -----
 \DeclareTranslation{English}{exercise}{Exercise}
 \DeclareTranslation{German}{exercise}{Aufgabe}
+\DeclareTranslation{English}{exercise-plural}{Exercises}
+\DeclareTranslation{German}{exercise-plural}{Aufgaben}
 \DeclareTranslation{English}{solution}{Proposed solution}
 \DeclareTranslation{German}{solution}{Lösungsvorschlag}
+\DeclareTranslation{English}{solution-plural}{Proposed solutions}
+\DeclareTranslation{German}{solution-plural}{Lösungsvorschläge}
 \DeclareTranslation{English}{claim}{Claim}
 \DeclareTranslation{German}{claim}{Behauptung}
 \DeclareTranslation{English}{claimproof}{Proof of claim}
@@ -270,6 +280,9 @@
 \newtheoremstyle{solution}% Like "exercise", but 1. no number and 2. if optional name is given, only the optional name is displayed
 {\item[\hskip\labelsep \theorem@headerfont ##1\theorem@separator]}%
 {\item[\hskip\labelsep \theorem@headerfont ##3\theorem@separator]}%
+\newtheoremstyle{miscenv}%
+	{\item[\hskip\labelsep \theorem@headerfont ##1\theorem@separator]}%
+	{\item[\hskip\labelsep \theorem@headerfont ##1##3\theorem@separator]}%
 
 %% Exercise and solution environment
 
@@ -304,6 +317,14 @@
 
 \theoremstyle{exercisenonumber}
 \renewtheorem{claim*}{\protect\GetTranslation{claim}}
+
+% miscthm
+\theoremstyle{miscenv}
+\theoremheaderfont{\normalfont\bfseries}
+\theoremseparator{.}
+\theorempreskip{\afterthmspace}
+\theorempostskip{\afterthmspace}
+\newtheorem{miscenv}{}
 
 % Solution
 \theoremstyle{solution}
