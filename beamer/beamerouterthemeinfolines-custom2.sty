@@ -23,6 +23,7 @@
 	\ifstrequal{#1}{section}{\renewcommand{\flfirst}{\usebeamerfont{section in head/foot}\insertsectionhead}}{}%
 	\ifstrequal{#1}{subsection}{\renewcommand{\flfirst}{\usebeamerfont{subsection in head/foot}\insertsubsectionhead}}{}%
 	\ifstrequal{#1}{date}{\renewcommand{\flfirst}{\usebeamerfont{date in head/foot}\insertshortdate}}{}%
+	\ifstrequal{#1}{none}{\renewcommand{\flfirst}{}}{}%
 }
 \DeclareOptionBeamer{footline-col2}{
 	\ifstrequal{#1}{author}{\renewcommand{\flsecond}{\usebeamerfont{author in head/foot}\insertshortauthor\expandafter\ifblank\expandafter{\beamer@shortinstitute}{}{~~(\insertshortinstitute)}}}{}%
@@ -30,6 +31,7 @@
 	\ifstrequal{#1}{section}{\renewcommand{\flsecond}{\usebeamerfont{section in head/foot}\insertsectionhead}}{}%
 	\ifstrequal{#1}{subsection}{\renewcommand{\flsecond}{\usebeamerfont{subsection in head/foot}\insertsubsectionhead}}{}%
 	\ifstrequal{#1}{date}{\renewcommand{\flsecond}{\usebeamerfont{date in head/foot}\insertshortdate}}{}%
+	\ifstrequal{#1}{none}{\renewcommand{\flsecond}{}}{}%
 }
 \DeclareOptionBeamer{footline-col3}{
 	\ifstrequal{#1}{author}{\renewcommand{\flthird}{\usebeamerfont{author in head/foot}\insertshortauthor\expandafter\ifblank\expandafter{\beamer@shortinstitute}{}{~~(\insertshortinstitute)}}}{}%
@@ -37,6 +39,7 @@
 	\ifstrequal{#1}{section}{\renewcommand{\flthird}{\usebeamerfont{section in head/foot}\insertsectionhead}}{}%
 	\ifstrequal{#1}{subsection}{\renewcommand{\flthird}{\usebeamerfont{subsection in head/foot}\insertsubsectionhead}}{}%
 	\ifstrequal{#1}{date}{\renewcommand{\flthird}{\usebeamerfont{date in head/foot}\insertshortdate}}{}%
+	\ifstrequal{#1}{none}{\renewcommand{\flthird}{}}{}%
 }
 \ExecuteOptionsBeamer{headline=section}
 \ProcessOptionsBeamer
