@@ -29,7 +29,7 @@
 \ExecuteOptionsX{style=classic}
 %% Font for "Submission until"
 \newcommand{\timefont}{}
-\DeclareOptionX{time-font}{\renewcommand{\timefont}{#1}}
+\DeclareOptionX{time-font}{\renewcommand{\timefont}{#1}} % TODO: time-font=\bfseries (or any other command) does not work when loading the class
 \ExecuteOptionsX{time-font=\itshape}
 %% exam: Exam mode
 \newbool{exam}
