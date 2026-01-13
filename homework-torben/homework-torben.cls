@@ -22,6 +22,7 @@
 \DeclareOptionX{cleveref}[true]{\AddToHook{begindocument}{
 	\crefname{exercise}{\GetTranslation{exercise}}{\GetTranslation{exercise-plural}}
 	\crefname{solution}{\GetTranslation{solution}}{\GetTranslation{solution-plural}}
+	\crefname{claim}{\GetTranslation{claim}}{\GetTranslation{claim-plural}}
 }}
 %% Style: classic (no logo) or logo-header (logo and names in header on each page) or obsolete1 (used in WS24, SS25)
 \newcommand{\docstyle}{}
@@ -154,6 +155,8 @@
 \DeclareTranslation{German}{solution-plural}{Lösungsvorschläge}
 \DeclareTranslation{English}{claim}{Claim}
 \DeclareTranslation{German}{claim}{Behauptung}
+\DeclareTranslation{English}{claim-plural}{Claims}
+\DeclareTranslation{German}{claim-plural}{Behauptungen}
 \DeclareTranslation{English}{claimproof}{Proof of claim}
 \DeclareTranslation{German}{claimproof}{Beweis der Behauptung}
 \DeclareTranslation{English}{sheet}{Sheet}
