@@ -42,7 +42,6 @@
 % Elementary Number theory
 \DeclareMathOperator{\sgn}{sgn}
 \DeclareMathOperator{\ggT}{ggT}
-\DeclareMathOperator{\gcd}{gcd}
 \DeclareMathOperator{\kgV}{kgV}
 \DeclareMathOperator{\lcm}{lcm}
 \newcommand{\binmod}{\mathbin{\textrm{mod}}}
@@ -216,6 +215,7 @@
 \newcommand{\neqsups}{\supsetneq}
 \newcommand{\isom}{\cong}
 \newcommand{\nisom}{\ncong}
+\newcommand{\congruent}{\equiv}
 \newcommand{\equalshat}{\mathrel{\stackon[1.5pt]{=}{\stretchto{\scalerel*[\widthof{=}]{\wedge}{\rule{1ex}{3ex}}}{0.5ex}}}}
 \newcommand{\equalstop}[1]{\overset{#1}{=}}
 
@@ -244,6 +244,8 @@
 %% mathtools paired delimiters
 
 % Sets: \Set{x \in A \given x=5}, \Set*, \Set[\big]
+% \Set has some horizontal space on the left and the right end,
+% \compactSet removes this space
 \providecommand\given{}
 \newcommand\SetSymbol[1][]{%
 	\nonscript\:#1\vert
@@ -252,11 +254,11 @@
 	\mathopen{}}
 \DeclarePairedDelimiterX\Set[1]{\{}{\}}{%
 	\renewcommand\given{\SetSymbol[\delimsize]}%
-	\,#1\, % Der eigentliche Inhalt
+	\,#1\, % Actual set content
 }
 \DeclarePairedDelimiterX\compactSet[1]{\{}{\}}{%
 	\renewcommand\given{\SetSymbol[\delimsize]}%
-	#1 % Der eigentliche Inhalt
+	#1 % Actual set content
 }
 % Generated sets
 \DeclarePairedDelimiterX{\gen}[1]{\langle}{\rangle}{\ifblank{#1}{\:\cdot\:}{\renewcommand\given{\SetSymbol[\delimsize]}#1}}
@@ -321,6 +323,8 @@
 }
 
 %% Cycles
+%% \cycle{1,2,3,4} is the cycle (1 2 3 4).
+%% An optional argument sets the separator: \cycle[;]{1,2,3,4} is (1;2;3;4).
 %% http://tex.stackexchange.com/questions/135868/permutation-cycle-notation
 \ExplSyntaxOn
 \NewDocumentCommand{\cycle}{ O{\;} m }
@@ -352,6 +356,8 @@
 }
 
 %% Text
+% Commands that print texts like "(i) => (ii)" to ensure that these are formatted
+% consistently throughout the document
 \newcommand{\quotimplies}[2]{\enquote{#1$ \imr $#2}}
 \newcommand{\quotiff}[2]{\enquote{#1$ \eq $#2}}
 

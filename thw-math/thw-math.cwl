@@ -30,7 +30,6 @@
 
 \sgn
 \ggT
-\gcd
 \kgV
 \lcm
 \binmod
@@ -197,6 +196,7 @@
 \neqsups
 \isom
 \nisom
+\congruent
 \equalshat
 \equalstop{top}
 
