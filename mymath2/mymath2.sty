@@ -1,8 +1,9 @@
-% Various commands and shortcuts
+%%%% This packages provides various commands and shortcuts, mostly but not restricted to math.
+%%%% It also loads some packages which I use "by default"
+
 % Index-Notation (Reminder): \index{Pi@$ \pi $}
-\ProvidesPackage{mymath2}
+\ProvidesPackage{mymath2}[2026/03/21]
 \RequirePackage{amssymb,amsmath,tikz,tikz-cd,mathtools,array,etoolbox,suffix,xcolor,xspace,xparse,mathdots}
-%\usepackage{aligned-overset}
 \RequirePackage{scalerel,stackengine} % eqhat
 \RequirePackage{mathrsfs,dsfont} % Fonts
 \RequirePackage{microtype} % Improves typography
@@ -10,7 +11,8 @@
 \usetikzlibrary{calc,positioning}
 \usetikzlibrary{babel}
 
-% TikZ: Symbol instead of arrow
+% TikZ: Symbol instead of arrow: \draw[symbol=\subseteq] (0,0) to (1,0);
+% Normally used in tikzcd: A \arrow[r, symbol=\subseteq] & B
 \tikzset{
   symbol/.style={
     draw=none,
