@@ -3,11 +3,18 @@
 
 % Index-Notation (Reminder): \index{Pi@$ \pi $}
 \ProvidesPackage{mymath2}[2026/03/21]
-\RequirePackage{amssymb,amsmath,tikz,tikz-cd,mathtools,array,etoolbox,suffix,xcolor,xspace,xparse,mathdots}
-\RequirePackage{scalerel,stackengine} % eqhat
+
+%% Loaded packages
+\RequirePackage{amssymb,amsmath,mathtools,array} % Standard math packages
+\RequirePackage{mathdots} % Improves ... and defines \iddots for ascending ...
+\RequirePackage{xcolor} % Colors
+\RequirePackage{tikz,tikz-cd} % TikZ
+\RequirePackage{etoolbox} % Programming facilities
+\RequirePackage{scalerel,stackengine} % Defines \scalerel for scaling and \stackon for stacking
 \RequirePackage{mathrsfs,dsfont} % Fonts
 \RequirePackage{microtype} % Improves typography
 
+%% TikZ libraries
 \usetikzlibrary{calc,positioning}
 \usetikzlibrary{babel}
 
@@ -21,52 +28,47 @@
   }
 }
 
-% Math operators
-\let\sl\relax
-\DeclareMathOperator{\Syl}{Syl}
-\DeclareMathOperator{\Isom}{Isom}
-\DeclareMathOperator{\spec}{spec}
+%% Math operators
+% Classical groups
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\SL}{SL}
 \DeclareMathOperator{\Sp}{Sp}
 \DeclareMathOperator{\SO}{SO}
 \DeclareMathOperator{\SU}{SU}
-\DeclareMathOperator{\diag}{diag}
-\DeclareMathOperator{\Tr}{Tr}
-\DeclareMathOperator{\Gal}{Gal}
-\DeclareMathOperator{\Sym}{Sym}
-\DeclareMathOperator{\Inn}{Inn}
-\DeclareMathOperator{\Alt}{Alt}
-\DeclareMathOperator{\Hom}{Hom}
-\DeclareMathOperator{\End}{End}
-\DeclareMathOperator{\Fix}{Fix}
-\DeclareMathOperator{\Ker}{Ker}
-\DeclareMathOperator{\Bild}{Bild}
-\DeclareMathOperator{\GL}{GL}
+% Classical Lie algebras
+\let\sl\relax
 \DeclareMathOperator{\gl}{gl}
 \DeclareMathOperator{\sl}{sl}
-\DeclareMathOperator{\Fr}{Fr}
-\DeclareMathOperator{\SL}{SL}
-\DeclareMathOperator{\Aut}{Aut}
-\DeclareMathOperator{\Abb}{Abb}
-\DeclareMathOperator{\Quot}{Quot}
-\DeclareMathOperator{\Rang}{Rang}
-\DeclareMathOperator{\charac}{char}
+% Elementary Number theory
 \DeclareMathOperator{\sgn}{sgn}
 \DeclareMathOperator{\ggT}{ggT}
+\DeclareMathOperator{\gcd}{gcd}
 \DeclareMathOperator{\kgV}{kgV}
 \DeclareMathOperator{\lcm}{lcm}
-\newcommand{\zentrum}{Z}
-\newcommand{\centralizer}[3][]{C_{#2}\brackets[#1]{#3}}
-\newcommand*{\normalisator}[2]{N_{#1}(#2)}
-\DeclareMathOperator{\dist}{dist}
-\DeclareMathOperator{\diam}{diam}
+\newcommand{\binmod}{\mathbin{\textrm{mod}}}
 \let\Re\relax
 \let\Im\relax
 \DeclareMathOperator{\Im}{Im}
 \DeclareMathOperator{\Re}{Re}
-\newcommand{\binmod}{\mathbin{\textrm{mod}}}
+\DeclareMathOperator{\charac}{char}
+% Hom sets
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\Sym}{Sym}
+% Maps and group actions
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\ker}{ker}
+\DeclareMathOperator{\Bild}{Bild}
+\DeclareMathOperator{\Fix}{Fix}
+\DeclareMathOperator{\Stab}{Stab}
+% Misc
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\Inn}{Inn}
+\DeclareMathOperator{\Quot}{Quot}
 \DeclareMathOperator{\Rad}{Rad}
 \DeclareMathOperator{\codim}{codim}
-\DeclareMathOperator{\Stab}{Stab}
+
 
 % Math environments
 \newenvironment{smallpmatrix}{\left(\begin{smallmatrix}}{\end{smallmatrix}\right)}
@@ -101,7 +103,7 @@
 \newcommand{\IZ}{\mathbb{Z}}
 \newcommand{\IOne}{\mathds{1}}
 
-% Skriptbuchstaben etc.
+% Calligraphic/scripture
 \newcommand{\calA}{\mathcal{A}}
 \newcommand{\calB}{\mathcal{B}}
 \newcommand{\calC}{\mathcal{C}}
@@ -156,69 +158,41 @@
 \newcommand{\scrY}{\mathscr{Y}}
 \newcommand{\scrZ}{\mathscr{Z}}
 
-% Griechisch
-\let\vphi\phi
+% Greek
+\let\vphi\phi % Switch \phi and \varphi
 \let\phi\varphi
-\newcommand{\veps}{\epsilon}
+\newcommand{\veps}{\epsilon} % Switch \epsilon and \varepsilon
 \newcommand{\eps}{\varepsilon}
-\let\vrho\rho
+\let\vrho\rho % Switch \rho and \varrho
 \let\rho\varrho
 \renewcommand{\emptyset}{\varnothing}
 
-% Ableitungen etc.
+% Differentials
 \newcommand{\del}[1]{\mathop{}\!\mathrm{d} #1}
 \newcommand{\diff}[2]{\frac{\mathrm{d} #1}{\mathrm{d} #2}}
 \newcommand{\pardiff}[2]{\frac{\partial #1}{\partial #2}}
-\newcommand{\dx}{\del{x}}
-\newcommand{\dy}{\del{y}}
-\newcommand{\dz}{\del{z}}
-\newcommand{\dt}{\del{t}}
-\newcommand{\dmu}{\del{\mu}}
-\newcommand{\difft}{\diff{t}}
-\newcommand{\lando}{o}
-\newcommand{\landO}{\mathcal{O}}
-
-% Limiten
-\newcommand{\limnti}{\lim_{n\ar\infty}}
-\newcommand{\limkti}{\lim_{k\ar\infty}}
-\newcommand{\limmti}{\lim_{m\ar\infty}}
-\newcommand{\limsupnti}{\limsup_{n \ar \infty}}
-\newcommand{\liminfnti}{\liminf_{n \ar \infty}}
 
 % Pfeile
-\newcommand{\eq}{\iff}
-\newcommand{\imr}{\implies}
-\newcommand{\iml}{\impliedby}
-\newcommand{\eqtop}[1]{\xLeftrightarrow{#1}}
-\newcommand{\imltop}[1]{\xLeftarrow{#1}}
-\newcommand{\imrtop}[1]{\xRightarrow{#1}}
-\newcommand{\ar}{\rightarrow}
-\newcommand{\partar}{\dashrightarrow}
-\newcommand{\artop}[1]{\xrightarrow{#1}}
-\newcommand{\al}{\leftarrow}
-\newcommand{\assign}{\mathbin{\al}}
-\newcommand{\alr}{\leftrightarrow}
-\newcommand{\nto}{\nrightarrow}
-\newcommand{\tonti}{\prtop{n \geg \infty}}
-\newcommand{\arinj}{\hookrightarrow}
-\newcommand{\arsurj}{\twoheadrightarrow}
-\newcommand{\hookdoubleheadrightarrow}{%
+\newcommand{\ifftop}[1]{\xLeftrightarrow{#1}}
+\newcommand{\impliedbytop}[1]{\xLeftarrow{#1}}
+\newcommand{\impliestop}[1]{\xRightarrow{#1}}
+\newcommand{\rightarrowtop}[1]{\xrightarrow{#1}}
+\newcommand{\injarrow}{\hookrightarrow}
+\newcommand{\surjarrow}{\twoheadrightarrow}
+\newcommand{\bijarrow}{%
   \hookrightarrow\mathrel{\mspace{-15mu}}\rightarrow
 }% https://tex.stackexchange.com/questions/296151/double-head-and-hook-arrow
-\newcommand{\arbij}{\hookdoubleheadrightarrow}
 
-% Definitionen
+% Definitions
 \newcommand{\defl}{\coloneqq}
 \newcommand{\defr}{\eqqcolon}
 \newcommand{\defeql}{\;\vcentcolon\Longleftrightarrow\;}
 \newcommand{\defeqr}{\;\Longleftrightarrow\vcentcolon\;}
 
-% Operatoren
+% Operators
 \newcommand{\nin}{\notin}
 \newcommand{\tensor}{\otimes}
 \newcommand{\dirsum}{\mathop{\oplus}}
-\newcommand{\logcolon}{\colon} % In logischen Aussagen, z.B. \fa n \in \IN \logcolon n > 0
-\newcommand{\mapcolon}{\colon} % In Abbildungen, z.B. f \mapcolon A \pr B
 \newcommand{\union}{\cup}
 \newcommand{\intersect}{\cap}
 \newcommand{\bigunion}{\bigcup}
@@ -228,59 +202,37 @@
 \newcommand{\bigdirsum}{\bigoplus}
 \newcommand{\hash}{\mathbin{\#}}
 
-% Quantoren
-\newcommand{\fa}{\forall}
-\newcommand{\ex}{\exists}
-\newcommand{\nex}{\mathrel{\nexists}}
-\newcommand{\exone}{\mathrel{\exists!}}
-
 % Relationen
 \newcommand{\normsub}{\trianglelefteq}
+\newcommand{\notnormsub}{\ntrianglelefteq}
 \newcommand{\normsup}{\trianglerighteq}
 \newcommand{\neqnormsub}{\mathrel{\ooalign{$\trianglelefteq$\cr$\lneq$\cr}}}
 \newcommand{\ideal}{\trianglelefteq}
-\newcommand{\ridel}{\vartriangleleft}
-\newcommand{\nnt}{\ntrianglelefteq}
+\newcommand{\rideal}{\vartriangleleft}
 \newcommand{\subs}{\subseteq}
 \newcommand{\nsubs}{\nsubseteq}
 \newcommand{\neqsubs}{\subsetneq}
 \newcommand{\sups}{\supseteq}
 \newcommand{\neqsups}{\supsetneq}
-\newcommand{\subgr}{\le}
-\newcommand{\neqsubgr}{\lneq}
 \newcommand{\isom}{\cong}
 \newcommand{\nisom}{\ncong}
-\newcommand{\glhat}{\mathrel{\stackon[1.5pt]{=}{\stretchto{\scalerel*[\widthof{=}]{\wedge}{\rule{1ex}{3ex}}}{0.5ex}}}}
-\newcommand{\gltop}[1]{\overset{#1}{=}}
-%\newcommand{\gltopalign}[1]{\overset{#1}&{=}} % aligned-overset package
-\newcommand{\glexcl}{\gltop{!}}
-
+\newcommand{\equalshat}{\mathrel{\stackon[1.5pt]{=}{\stretchto{\scalerel*[\widthof{=}]{\wedge}{\rule{1ex}{3ex}}}{0.5ex}}}}
+\newcommand{\equalstop}[1]{\overset{#1}{=}}
 
 % Misc
-\newcommand{\clos}[1]{\overline{#1}}
-\newcommand{\conj}[1]{\closure{#1}}
-%\newcommand{\listing}[2]{{#1}_1, \ldots, {#1}_{#2}}
-\newcommand{\listing}[3][1]{{#2}_{#1}, \ldots, {#2}_{#3}}
-\newcommand*{\oplisting}[4][1]{{#2}_{#1} #4 \cdots #4 {#2}_{#3}}
-\newcommand{\tup}[3][1]{(\listing[#1]{#2}{#3})}
-\newcommand{\pol}[2][t]{{#2[{#1}]}}
-\newcommand*{\rcos}[2]{{#1}\backslash{#2}}
 \newcommand{\evaluated}[2]{\left. #1 \right\rvert_{#2}}
 \newcommand{\restrict}[2]{\left. #1 \right\rvert_{#2}}
 \newcommand{\restrictsize}[3]{#1#3\vert_{#2}}
-\newcommand*{\map}[5]{\ifblank{#1}{}{#1\mapcolon} \ifblank{#2}{}{#2 \ar #3} \ifblank{#4}{}{\ifblank{#2}{}{,} #4 \mapsto #5}}
-\newcommand*{\mapinj}[5]{\ifblank{#1}{}{#1\mapcolon} \ifblank{#2}{}{#2 \arinj #3} \ifblank{#4}{}{\ifblank{#2}{}{,} #4 \mapsto #5}}
-\newcommand*{\mapsurj}[5]{\ifblank{#1}{}{#1\mapcolon} \ifblank{#2}{}{#2 \arsurj #3} \ifblank{#4}{}{\ifblank{#2}{}{,} #4 \mapsto #5}}
-\newcommand*{\mapbij}[5]{\ifblank{#1}{}{#1\mapcolon} \ifblank{#2}{}{#2 \arbij #3} \ifblank{#4}{}{\ifblank{#2}{}{,} #4 \mapsto #5}}
+\newcommand*{\map}[5]{\ifblank{#1}{}{#1\mapcolon} \ifblank{#2}{}{#2 \rightarrow #3} \ifblank{#4}{}{\ifblank{#2}{}{,} #4 \mapsto #5}}
+\newcommand*{\mapinj}[5]{\ifblank{#1}{}{#1\mapcolon} \ifblank{#2}{}{#2 \injarrow #3} \ifblank{#4}{}{\ifblank{#2}{}{,} #4 \mapsto #5}}
+\newcommand*{\mapsurj}[5]{\ifblank{#1}{}{#1\mapcolon} \ifblank{#2}{}{#2 \surjarrow #3} \ifblank{#4}{}{\ifblank{#2}{}{,} #4 \mapsto #5}}
+\newcommand*{\mapbij}[5]{\ifblank{#1}{}{#1\mapcolon} \ifblank{#2}{}{#2 \bijarrow #3} \ifblank{#4}{}{\ifblank{#2}{}{,} #4 \mapsto #5}}
 \def\dashmapsto{\mapstochar\dashrightarrow}
-\newcommand*{\mappart}[5]{\ifblank{#1}{}{#1\mapcolon} \ifblank{#2}{}{#2 \dashrightarrow #3} \ifblank{#4}{}{\ifblank{#2}{}{,} #4 \dashmapsto #5}}
-\newcommand*{\mapgeneral}[5]{\ifblank{#1}{}{#1\mapcolon} \ifblank{#2}{}{#2 \rightsquigarrow #3} \ifblank{#4}{}{\ifblank{#2}{}{,} #4 \mapsto #5}}
-\newcommand*{\grindex}[2]{[#1:#2]}
+\newcommand*{\mapdash}[5]{\ifblank{#1}{}{#1\mapcolon} \ifblank{#2}{}{#2 \dashrightarrow #3} \ifblank{#4}{}{\ifblank{#2}{}{,} #4 \dashmapsto #5}}
+\newcommand*{\mapsquig}[5]{\ifblank{#1}{}{#1\mapcolon} \ifblank{#2}{}{#2 \rightsquigarrow #3} \ifblank{#4}{}{\ifblank{#2}{}{,} #4 \mapsto #5}}
 \newcommand{\id}{\mathord{\mathrm{id}}}
-\newcommand{\ord}{o}
-\newcommand*{\compl}[1]{{#1}^{\complement}}
 
-%%% ---- Komplizierter ---
+%%% ---- More complicated stuff ---
 
 %http://tex.stackexchange.com/questions/224805/i-want-a-really-small-underbrace
 \def\smallunderbrace#1{\mathop{\vtop{\m@th\ialign{##\crcr%
@@ -291,7 +243,7 @@
 
 %% mathtools paired delimiters
 
-% Mengen
+% Sets: \Set{x \in A \given x=5}, \Set*, \Set[\big]
 \providecommand\given{}
 \newcommand\SetSymbol[1][]{%
 	\nonscript\:#1\vert
@@ -306,35 +258,33 @@
 	\renewcommand\given{\SetSymbol[\delimsize]}%
 	#1 % Der eigentliche Inhalt
 }
-% Erzeugnisse
+% Generated sets
 \DeclarePairedDelimiterX{\gen}[1]{\langle}{\rangle}{\ifblank{#1}{\:\cdot\:}{\renewcommand\given{\SetSymbol[\delimsize]}#1}}
-% Betrag
+% Absolute value
 \DeclarePairedDelimiterX{\abs}[1]{\lvert}{\rvert}{\ifblank{#1}{\:\cdot\:}{#1}}
 % Norm
 \DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{\ifblank{#1}{\:\cdot\:}{#1}}
-% Skalarprodukt
-%\DeclarePairedDelimiterX{\scp}[2]{\langle}{\rangle}{\ifblank{#1}{\:\cdot\:}{#1}, \ifblank{#2}{\:\cdot\:}{#2}}
+% Inner product
 \DeclarePairedDelimiterX{\scp}[2]{\langle}{\rangle}{\ifblank{#1}{\:\cdot\:}{#1} \delimsize\vert \ifblank{#2}{\:\cdot\:}{#2}}
-\DeclarePairedDelimiterX{\altscp}[2]{(}{)}{\ifblank{#1}{\:\cdot\:}{\,#1\,} \delimsize\vert \ifblank{#2}{\:\cdot\:}{\,#2\,}}
-% Lie-Klammer / Kommutator
+% Lie bracket / commutator
 \DeclarePairedDelimiterX{\lie}[2]{[}{]}{\ifblank{#1}{\:\cdot\:}{#1}, \ifblank{#2}{\:\cdot\:}{#2}}
 \DeclarePairedDelimiterX{\commutator}[2]{[}{]}{\ifblank{#1}{\:\cdot\:}{#1}, \ifblank{#2}{\:\cdot\:}{#2}}
-% Assoziator
+% Associator
 \DeclarePairedDelimiterX{\assoc}[3]{[}{]}{\ifblank{#1}{\:\cdot\:}{#1}, \ifblank{#2}{\:\cdot\:}{#2}, \ifblank{#3}{\:\cdot\:}{#3}}
-% Untere Gauß-Klammer
+% Floor
 \DeclarePairedDelimiterX{\floor}[1]{\lfloor}{\rfloor}{\ifblank{#1}{\:\cdot\:}{#1}}
-% Obere Gauß-Klammer
+% Ceiling
 \DeclarePairedDelimiterX{\ceil}[1]{\lceil}{\rceil}{\ifblank{#1}{\:\cdot\:}{#1}}
-% Runde Klammer
+% Round brackets
 \DeclarePairedDelimiterX{\brackets}[1]{(}{)}{#1}
-% Eckige Klammer
+% Square brackets
 \DeclarePairedDelimiterX{\sqbrackets}[1]{[}{]}{#1}
-% Dreiecksklammer
+% Triangle brackets
 \DeclarePairedDelimiterX{\trbrackets}[1]{\langle}{\rangle}{#1}
-% Geschweifte Klammer
+% Braces
 \DeclarePairedDelimiterX{\braces}[1]{\{}{\}}{#1}
 
-%% Disjunkte Vereinigung
+%% Disjoint union as normal union symbol with a doit
 % https://tex.stackexchange.com/questions/3964/mathematical-symbol-for-disjoint-set-union
 \def\moverlay{\mathpalette\mov@rlay}
 \def\mov@rlay#1#2{\leavevmode\vtop{%
@@ -348,7 +298,6 @@
 
 \newcommand{\disjunion}{\charfusion[\mathbin]{\cup}{\cdot}}
 \newcommand{\bigdisjunion}{\charfusion[\mathop]{\bigcup}{\cdot}}
-\newcommand{\maxug}{\mathrel{\ooalign{$ < $\cr\hspace{0.125cm}$ \cdot $\cr}}}
 
 %% divides symbol
 %% http://tex.stackexchange.com/questions/117032/divides-not-divides-and-cardinalities
@@ -371,7 +320,7 @@
 	}%
 }
 
-%% Zykel und Transpositionen
+%% Cycles
 %% http://tex.stackexchange.com/questions/135868/permutation-cycle-notation
 \ExplSyntaxOn
 \NewDocumentCommand{\cycle}{ O{\;} m }
@@ -393,17 +342,22 @@
 
 \newcommand{\mywarning}[1]{\GenericWarning{}{LaTeX Warning: #1}}
 \newcommand{\removedisplaybelowskip}{\addvspace{-\belowdisplayskip}}
-\newcommand{\refcustomitem}[1]{% Allows referencing of custom items %https://tex.stackexchange.com/questions/328388/custom-items-in-enumerate-labels-and-references
+
+% Allows referencing of custom items:
+% \begin{enumerate} \refcustomitem{(X)}\label{it} Bla \end{enumerate} By~\ref{it}
+% Then the reference is printed as "(X)".
+% https://tex.stackexchange.com/questions/328388/custom-items-in-enumerate-labels-and-references
+\newcommand{\refcustomitem}[1]{
 	\item[#1]\protected@edef\@currentlabel{#1}%
 }
-\newcommand*{\mynobreakpar}{\par\nobreak\@afterheading} % Nicht verwendet, keine Ahnung, ob das funktioniert
 
 %% Text
-\newcommand{\quotimr}[2]{\enquote{#1$ \imr $#2}}
-\newcommand{\quoteq}[2]{\enquote{#1$ \eq $#2}}
+\newcommand{\quotimplies}[2]{\enquote{#1$ \imr $#2}}
+\newcommand{\quotiff}[2]{\enquote{#1$ \eq $#2}}
 
 %% Hyphenation
 \hyphenation{Ska-lar-mul-ti-pli-ka-tion}
+\hyphenation{Mou-fang}
 \hyphenation{noe-thersch}
 \hyphenation{links-noe-thersch}
 \hyphenation{rechts-noe-thersch}
