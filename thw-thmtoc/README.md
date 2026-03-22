@@ -196,6 +196,8 @@ and then using this type for your
 thmtoc entries.
 The latter can be done by passing the new type as a final optional argument to `\thmtocaddentry`:
 `\thmtocaddentry[lem]{5.8}{Technical lemma}[newentrytype]`.
+Do not forget to declare your new entry type to titletoc with
+`\contentsuse{newentrytype}{thmtoc}`.
 
 If you are unhappy with the layout of chapter (or similar) entries in your thmtoc,
 you can define a new entry type as above and then redefine `\thmtocaddchapter`.

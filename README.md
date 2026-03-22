@@ -55,7 +55,8 @@ Such tasks are handled by the more specialised packages in this collection.
 
 This package provides an interface for automatically creating a "List of Theorems", "List of Definitions"
 and similar lists, which I refer to as "thmtocs".
-The packages thw-theorems and thw-lecture-notes use thw-thmtoc to define such thmtocs.
+This is based on the functionality of the titletoc package.
+The packages thw-theorems and thw-lecture-notes use thw-thmtoc to define thmtocs.
 For more details, see the readme file for thw-thmtoc.
 
 ## thw-theorems
