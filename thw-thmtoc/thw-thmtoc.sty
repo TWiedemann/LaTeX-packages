@@ -1,0 +1,181 @@
+%%% This package provides an interface for creating a "thmtoc", a list of all "things" of a given
+%%% (set of) types. Here a "thing" can be anything that has a LaTeX counter, but the main
+%%% use case we have in mind are list of theorems, definitions, etc.
+%%% Multiple lists can be used in the same document. Each list has an internal name.
+%%% The entries of the list with internal name xyz are stored in a file with ending .thmtoc_xyz.
+%%% The list is printed with \printthmtoc[xyz]{Name displayed in the document}.
+%%% Entries are added to the list with \thmcaption{number}{Entry name}{xyz}.
+%%% In all commands, the internal name is an optional argument. If it is not specified,
+%%% then the file ending .thmtoc is used.
+
+\ProvidesPackage{thw-thmtoc}
+% We use \UseName, which according the LaTeX Companion 3, page 528 was added in 2022.
+\NeedsTeXFormat{LaTeX2e}[2022/06/02]
+
+%% ----- Package options -----
+% Normally the namespace "thw-thmtoc" would be automatic for keys defined in this packages,
+% but apparently the hyphen in the package name breaks this, so we have to set the
+% namespace explicitly
+\DeclareKeys[ thw-thmtoc ]{
+	% Name of the sectioning command whose starred version is used for thmtocs.
+	% No backslash is given, e.g. "section" or "chapter"
+    thmtoc-head.store = \@thmtoc@head 
+}
+\SetKeys[ thw-thmtoc ]{
+	% By default, thmtocs are printed as a \section* because this command is available in most
+	% document classes. For classes which define \chapter, it might be better to use \chapter
+	% (as for the normal table of contents).
+    thmtoc-head = {section}
+}
+\ProcessKeyOptions[ thw-thmtoc ]
+
+%% ----- Required packages -----
+
+\RequirePackage{titletoc} % For creating custom tocs
+\RequirePackage{etoolbox} % For control structures such as \ifblank
+
+%% ----- Internal package commands -----
+
+% Internal name for #1. Thus this is thmtoc if #1 is blank and thmtoc_#1 otherwise.
+\newcommand{\@thmtoc@internalname}[1]{\ifblank{#1}{thmtoc}{thmtoc_#1}}
+% Constant: name used for the style of thmtoc entries
+\newcommand{\@thmtoc@defaultentrystylename}{thmtocdefault}
+% Mark set on page when thmtoc is printed, e.g. to be used in headline/footline.
+% The user may want to change this, so this is not an internal command (no @).
+% We use \MakeUpperCase because \MakeUpperCase is also used (in a hardcoded way)
+% for the marks of tables of contents etc., so it is better to use it here
+% as well for consistency.
+% TODO: Apparently modern LaTeX has a new mark mechanism that is more powerful than
+% \markboth, \markright. Look into this. See LaTeX Companion 3, Sections 5.3.4, 5.3.5.
+\newcommand{\thmtocmark}[1]{\markright{\MakeUppercase{#1}}}
+
+%% ----- Commands for printing a thmtoc -----
+
+% Prints the content of a thmtoc. No header, no marks.
+% #1: Internal thmtoc name.
+\newcommand{\@thmtoc@printthmtoc}[1][]{
+	\@starttoc{\@thmtoc@internalname{#1}}% Print thmtoc
+}
+
+% Prints a thmtoc with the header specified by the argument.
+% ("Print thmtoc as section/chapter/...")
+% #1: Optionally, the command may be called with a star: \printthmtocas*
+% #2 (optional): Internal thmtoc name.
+% #3: Name of the sectioning command used for the header, e.g. "section" or "chapter".
+%     Note that no backslash is given. If the
+% #4: Name used in the header, e.g. "List of Theorems".
+% #5 (optional): Short version of #4 used for the mark. If no argument is given, then #4 is used.
+%     If #5 is given but blank (i.e. "[]"), then no mark is set.
+% Examples:
+% - \printthmtocas[def]{section}{List of Definitions} prints the content of .thmtoc_def with
+%   a \section header titled "List of Defintions"
+% - \printthmtocas*{chapter}{List of Theorems, Lemmas, Definitions, and more stuff}[Long list]
+%   prints the content of .thmtoc as a \chapter* titled "List of..." and with mark "Long list"
+% - \printthmtocas*{chapter}{List of Theorems, Lemmas, Definitions, and more stuff}[]
+%   is the same as above, but no mark is set at all.
+\NewDocumentCommand{\printthmtocas}{s O{} m m o}{
+	\IfBooleanTF{#1}{%
+		% Starred version: \printthmtocas*
+		\UseName{#3}*{#4}% Use the starred sectioning command \#3*
+		% Since starred sectioning commands to not set a mark, we do it ourselves.
+		\IfNoValueTF{#5}{%
+			% If #5 is not set...
+			\thmtocmark{#4}% Set a mark with content #4
+		}{%
+			% If #5 is set, set a mark with content #5
+			% unless #5 is blank, in which case we set no mark.
+			\ifblank{#5}{}{\thmtocmark{#5}}%
+		}%
+	}{%
+		% Non-starred version: \printthmtocas
+		\UseName{#3}{#4}% Use the non-starred sectioning command \#3
+		% We do not set a mark because the sectioning command does it itself
+	}%
+	\@thmtoc@printthmtoc[#2]% Print thmtoc
+}
+
+% Prints a thmtoc in the default way:
+% With the starred version of the sectioning command \@thmtoc@head.
+% This is the standard user command for printint a thmtoc.
+% #1 (optional): Internal thmtoc name.
+% #2: Name used in the header, e.g. "List of Theorems".
+% #3 (optional): Short version of #4 used for the mark. If no argument is given, then #2 is used.
+%     If #3 is given but blank (i.e. "[]"), then no mark is set.
+% Example: \printthmtoc[def]{List of Definitions}
+\NewDocumentCommand{\printthmtoc}{O{} m o}{
+	% Call \printthmtoc* with the arguments, and pass on #3 if given.
+	\IfNoValueTF{#3}{%
+		\printthmtocas*[#1]{\@thmtoc@head}{#2}%
+	}{%
+		\printthmtocas*[#1]{\@thmtoc@head}{#2}[#3]%
+	}%
+}
+
+%% ----- Commands for adding elements to a thmtoc -----
+
+% Internal command to add a section/chapter/... header to a thmtoc file.
+% #1: Internal thmtoc name.
+% #2: Type of header, e.g. section, chapter, subsection
+% #3: Name of section/chapter/...
+\newcommand{\@thmtoc@headertotoc}[3][]{
+	% \UseName{xyz} expands to the command \xyz. In this case, it may for example
+	% expand to \thechapter, the current chapter number.
+	\addcontentsline{\@thmtoc@internalname{#1}}{#2}{\protect\numberline{\UseName{the#2}}#3}%
+}
+
+% User command to add a section/chapter/... header to a thmtoc file.
+% #1: Internal thmtoc name.
+% #2: Name of section/chapter/...
+\newcommand{\thmtocaddpart}[2][]{\@thmtoc@headertotoc[#1]{part}{#2}}
+\newcommand{\thmtocaddchapter}[2][]{\@thmtoc@headertotoc[#1]{chapter}{#2}}
+\newcommand{\thmtocaddsection}[2][]{\@thmtoc@headertotoc[#1]{section}{#2}}
+\newcommand{\thmtocaddsubsection}[2][]{\@thmtoc@headertotoc[#1]{subsection}{#2}}
+
+% Add entry to thmtoc file.
+% #1 (optional): Internal thmtoc name.
+% #2: Entry number.
+% #3: Entry name.
+% #4 (optional): Style of entry in the thmtoc. Default: \@thmtoc@defaultentrystylename
+% Examples:
+% - \thmtocaddentry[def]{2.7}{Vector space}
+% - \thmtocaddentry{3.9}{Engel's Theorem}[myspecialstyle]
+% - \thmtocaddentry[lem]{5.8}{Technical lemma}[myspecialstyle]
+\NewDocumentCommand{\thmtocaddentry}{ O{} m m O{\@thmtoc@defaultentrystylename}}{
+	\addcontentsline{\@thmtoc@internalname{#1}}{#4}{\protect\numberline{#2}#3}
+}
+
+% Add a page break to thmtoc file.
+% #1: internal thmtoc name.
+\newcommand{\thmtocnewpage}[1][]{
+	\addtocontents{\@thmtoc@internalname{#1}}{\protect\newpage}%
+}
+
+%% ----- Layout of thmtoc entries -----
+
+%% For a detailed explanation of the used commands, see eiter
+%% - section 6 (in particular, 6.1) of the titlesec/titletoc documentation, or
+%% - section 2.3.2 of the LaTeX Companion 3.
+
+% Declare that we define an entry style with name \@thmtoc@defaultentrystylename.
+% The second argument stands for the file extensions, but even if we use extensions
+% like .thmtoc_def, the current declaration is sufficient (apparently).
+\contentsuse{\@thmtoc@defaultentrystylename}{thmtoc}
+
+% Layout of a default entry.
+
+\newlength{\thmtocleftindent} % Indentation from left margin
+\setlength{\thmtocleftindent}{5.5em}
+\newlength{\thmtoclabelwidth}     % Width of label (i.e., of the number). Label starts by this
+\setlength{\thmtoclabelwidth}{4em}% length to the left of the text of the thmtoc entry.
+\newlength{\thmtocleaderwidth} % Distance between two dots in the leaders
+\setlength{\thmtocleaderwidth}{8pt}
+\dottedcontents{\@thmtoc@defaultentrystylename}%
+	[\thmtocleftindent]{\filright}{\thmtoclabelwidth}{\thmtocleaderwidth}% \filright = \raggedright
+
+% The following is an equivalent definition using \titlecontents:
+% \titlecontents{\@thmtoc@defaultentrystylename}
+%	[\thmtocleftindent]{\filright}{\contentslabel{\thmtoclabelwidth}}{}
+%	{\titlerule*[\thmtocleaderwidth]{.}\contentspage}
+
+% Sectioning commands that are entered into a thmtoc via \thmtocaddchapter etc. use the default
+% formatting for these sectioning commands in tocs.
