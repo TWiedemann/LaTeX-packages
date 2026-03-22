@@ -1,7 +1,13 @@
-% Provides list of theorems
+%%% This package provides an interface for creating a "thmtoc", a list of all "things" of a given
+%%% (set of) types. Here a "thing" can be anything that has a LaTeX counter, but the main
+%%% use case we have in mind are list of theorems, definitions, etc.
+%%% Multiple lists can be used in the same document. Each list has an internal name.
+%%% The entries of the list with internal name xyz are stored in a file with ending .thmtoc_xyz.
+%%% The list is printed with \printthmtoc{xyz}{Name displayed in the document}.
+%%% Entries are added to the list with \thmcaption{number}{Entry name}{xyz}.
+
 \ProvidesPackage{thmtoc}
 \RequirePackage{titletoc}
-
 
 % Name des counters, der für Sätze o.Ä. verwendet wird / Name of the counter for theorems etc.
 \newcommand{\theoremcountername}{thm}
@@ -11,18 +17,16 @@
 \newcommand{\thmchaptertotoc}[2]{\addcontentsline{thmtoc_#2}{chapter}{\protect\numberline{\thechapter}#1}}
 % thmtoc erzeugen (#1: interner Name des thmtocs, #2: Name des thmtocs) / Print thmtoc (#1: internal thmtoc name, #2: Printed thmtoc name)
 \newcommand{\printthmtoc}[2]{\chapter*{#2}\markright{\MakeUppercase{#2}}\ifblank{#1}{\@starttoc{thmtoc}}{\@starttoc{thmtoc_#1}}}
-% Print thmtoc as section
+% Print thmtoc as \section*(#1: internal thmtoc name, #2: Printed thmtoc name)
 \newcommand{\printthmtocsection}[2]{\section*{#2}\markright{\MakeUppercase{#2}}\ifblank{#1}{\@starttoc{thmtoc}}{\@starttoc{thmtoc_#1}}}
-% Markierung für wichtige Einträge / emphasis for important entries
-\newcommand{\thmemph}[1]{\textbf{#1}}
 
 %% Interface für Pakete / Interface for packages
-% Eintrag zu thmtoc hinzufügen (#1: Nummer des Eintrags, #2: Name des Eintrags, #3: interner Name des thmtocs) / Create thmtoc entry (#1: entry number, #2: entry name, #3: internal thmtoc name)
+% Create thmtoc entry (#1: entry number, #2: entry name, #3: internal thmtoc name)
 \newcommand{\thmcaption}[3]{\addcontentsline{thmtoc_#3}{theorem}{\protect\numberline{#1}#2}}
-% Neue Seite in thmtoc erzwingen (#1: interner Name des thmtocs) / Force new page in thmtoc (#1: internal thmtoc name)
+% Force new page in thmtoc (#1: internal thmtoc name)
 \newcommand{\thmtocnewpage}[1]{\addtocontents{thmtoc_#1}{\protect\newpage}}
 
-%% Aussehen der Verzeichnisse (titletoc)
+%% Layout of the thmtoc, using titletoc package
 
 \contentsuse{theorem}{thmtoc}
 \contentsuse{thmchapter}{thmtoc}
@@ -38,10 +42,3 @@
 	\renewcommand{\theHchapter}{\thepart.\thechapter}% Hyperref fuer chapters anpassen
 	\addtothmlink{\thepart.}%
 }
-
-%% Altes Zeug / Obsolete
-%\newcommand{\thmtoctheoremformat}[1]{\hyperlink{\theoremcountername.\thecontentslabel}{\contentslabel{4em}#1}}
-%\titlecontents{theorem}[5.5em]{\filright}{\thmtoctheoremformat}{}{\titlerule*[8pt]{.}\contentspage}
-%\newcommand{\currentthmtoc}{thmtoc}
-%\newcommand{\setcurrentthmtoc}[1]{\ifblank{#1}{\renewcommand{\currentthmtoc}{thmtoc}}{\renewcommand{\currentthmtoc}{thmtoc_#1}}}
-%\newcommand{\listoftheorems}[1][]{\chapter*{\listoftheoremsname}\markright{\MakeUppercase{\listoftheoremsname}}\ifblank{#1}{\@starttoc{thmtoc}}{\@starttoc{thmtoc_#1}}}
