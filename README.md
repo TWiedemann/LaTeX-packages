@@ -41,3 +41,23 @@ The packages thw-theorems and thw-lecture-notes use thw-thmtoc to define thmtocs
 For more details, see the readme file for thw-thmtoc.
 
 ## thw-theorems
+
+
+## thw-homework
+
+This is document class (not a package) for creating exercise sheets and exams.
+It is designed to work as a standalone and hence independent from the other packages.
+However, it works well together with thw-math.
+This class defines its own theorem-like environments, such as "exercise" and
+"solutions", so it should not be combined with thw-theorems.
+
+Key features:
+- Defines theorem-like environments such as "exercise", "claim" and "solution".
+In particular, this class should not be combined with thw-theorems.
+- The printing of solutions can be disabled with a package option.
+Hence exercises can go into the same source file as their solutions.
+- English and German language support. The desired language should be specified as a package
+option and can be changed in the middle of the document with the babel command
+`\selectlanguage{name}`.
+- Configurable style for page headers, footers and the document title.
+
