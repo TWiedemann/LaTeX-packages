@@ -58,6 +58,10 @@
 	sheet-title-symb.store = \@homework@sheettitlesymb
 }
 
+\DeclareUnknownKeyHandler{
+    \PassOptionsToClass{\CurrentOption}{article}
+}
+
 % Default values for package options
 \SetKeys{
 	solutions=true,
@@ -67,14 +71,14 @@
 	header-author-pos=right,
 	coursename-in-header=true,
 	style=head-logo,
-	sheet-title-symb={--}
+	sheet-title-symb={}
 }
 
 \ProcessKeyOptions
 
 %%% ----- Package and class loading -----
 
-\LoadClass{article} % base on article class
+\LoadClass{article} % based on article class
 
 \RequirePackage{etoolbox} % programming utilities such as \ifbool
 \RequirePackage{lastpage} % for \pageref{LastPage}
@@ -110,9 +114,9 @@
 }
 
 \ifdefstring{\@homework@authorpos}{left}{}{
-	\ifdefstring{\@homework@type}{right}{}{
+	\ifdefstring{\@homework@authorpos}{right}{}{
 		\PackageWarning{thw-homework}{
-			Incorrect option for key "type": Only "left" and "right" are allowed.
+			Incorrect option for key "header-author-pos": Only "left" and "right" are allowed.
 		}
 	}
 }
@@ -299,16 +303,14 @@
 
 % The string "Submission until: ..." or "Time limit: ..." for homework/exam.
 \newcommand{\@homework@timestring}{
-	\ifbool{@homework@solutions}{}{
-		\@homework@timefont%
-		\ifdefstring{\@homework@type}{exam}{
-			\GetTranslation{time-limit}%
-		}{}%
-		\ifdefstring{\@homework@type}{exercise}{
-			\GetTranslation{deadline}%
-		}{}%
-		: \@homework@timelimit
-	}%
+	\@homework@timefont%
+	\ifdefstring{\@homework@type}{exam}{
+		\GetTranslation{time-limit}%
+	}{}%
+	\ifdefstring{\@homework@type}{exercise}{
+		\GetTranslation{deadline}%
+	}{}%
+	: \@homework@timelimit
 }
 
 % Font for first/second line in \maketitle
@@ -321,14 +323,14 @@
 		\ifbool{@homework@courseheader}{%
 			\@homework@titlefont\@homework@sheetstring
 
-			\normalfont\normalsize\@homework@timestring
+			\ifbool{@homework@solutions}{}{\normalfont\normalsize\@homework@timestring}
 		}{%
 			\@homework@titlefont\@homework@coursename
 
 			\normalfont\normalsize% Reset font
 			\@homework@subtitlefont\@homework@sheetstring
 
-			\normalfont\normalsize\@homework@timestring
+			\ifbool{@homework@solutions}{}{\normalfont\normalsize\@homework@timestring}
 		}
 		\addvspace{0.5cm}
 	\end{center}
@@ -398,7 +400,7 @@
 %% Fonts
 \newcommand{\@homework@exerciseheaderfont}{\bfseries}
 \newcommand{\@homework@claimheaderfont}{\scshape}
-\newcommand{\@homework@miscthmheaderfont}{\bfseries}
+\newcommand{\@homework@miscenvheaderfont}{\bfseries}
 \newcommand{\@homework@solutionheaderfont}{\bfseries\itshape}
 \newcommand{\@homework@claimproofheaderfont}{\itshape}
 
@@ -432,9 +434,9 @@
 \theoremstyle{exercisenonumber}
 \renewtheorem{claim*}{\protect\GetTranslation{claim}}
 
-%% miscthm
+%% miscenv
 \theoremstyle{miscenv}
-\theoremheaderfont{\normalfont\@homework@miscthmheaderfont}
+\theoremheaderfont{\normalfont\@homework@miscenvheaderfont}
 \theoremseparator{.}
 \theorempreskip{\@homework@afterthmspace}
 \theorempostskip{\@homework@afterthmspace}

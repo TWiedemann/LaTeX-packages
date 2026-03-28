@@ -28,18 +28,24 @@
 \makeliveexercisestitle
 
 # Theorem-like environments
+\begin{exercise}#\env
 \begin{exercise}[name]#\env
 \end{exercise}
 \begin{exercise*}[name]#\env
 \end{exercise*}
+\begin{claim}#\env
 \begin{claim}[name]#\env
 \end{claim}
-\begin{miscthm}[name]#\env
-\end{miscthm}
+\begin{claim*}#\env
+\begin{claim*}[name]#\env
+\end{claim*}
+\begin{miscenv}[name]#\env
+\end{miscenv}
 \begin{solution}[name]#\env
 \end{solution}
 \begin{solution-fragile}[name]#\env
 \end{solution-fragile}
+\begin{claimproof}#\env
 \begin{claimproof}[name]#\env
 \end{claimproof}
 
