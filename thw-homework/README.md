@@ -150,10 +150,10 @@ be surrounded by `\makeatletter` and `\makeatother`, as in the following example
 
 | Command | Default value | Meaning |
 | - | - | - |
-| `\@homework@timefont | `\itshape` | Font used for submission deadline and time limit |
-| `\@homework@titlefont | `\LARGE\bfseries` | Font used for first line in document title |
-| `\@homework@subtitlefont | `\Large\bfseries` | Font used for subtitle in document title, if it exists |
-| `\@homework@liveexercisestitlefont | `\LARGE\bfseries` | Font used for header indicating live exercises |
+| `\@homework@timefont` | `\itshape` | Font used for submission deadline and time limit |
+| `\@homework@titlefont` | `\LARGE\bfseries` | Font used for first line in document title |
+| `\@homework@subtitlefont` | `\Large\bfseries` | Font used for subtitle in document title, if it exists |
+| `\@homework@liveexercisestitlefont` | `\LARGE\bfseries` | Font used for header indicating live exercises |
 | `@homework@exerciseheaderfont` | `\bfseries` | Font used for "Exercise x.y" |
 | `@homework@claimheaderfont` | `\scshape` | Font used for "Claim x" |
 | `@homework@miscthmheaderfont` | `\bfseries` | Font used for `miscthm` |
