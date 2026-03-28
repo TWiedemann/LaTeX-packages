@@ -43,7 +43,6 @@
 \Sym
 
 \Ker
-\ker
 \Bild
 \Fix
 \Stab
