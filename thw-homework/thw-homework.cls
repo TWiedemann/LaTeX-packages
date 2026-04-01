@@ -332,6 +332,7 @@
 
 			\ifbool{@homework@solutions}{}{\normalfont\normalsize\@homework@timestring}
 		}
+		
 		\addvspace{0.5cm}
 	\end{center}
 }
