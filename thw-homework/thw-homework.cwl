@@ -31,8 +31,12 @@
 \begin{exercise}#\env
 \begin{exercise}[name]#\env
 \end{exercise}
+\begin{exercise*}#\en
 \begin{exercise*}[name]#\env
 \end{exercise*}
+\begin{funfact}#\env
+\begin{funfact}[name]#\env
+\end{funfact}
 \begin{claim}#\env
 \begin{claim}[name]#\env
 \end{claim}

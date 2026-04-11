@@ -400,10 +400,19 @@
 
 %% Fonts
 \newcommand{\@homework@exerciseheaderfont}{\bfseries}
+\newcommand{\@homework@funfactheaderfont}{\bfseries}
 \newcommand{\@homework@claimheaderfont}{\scshape}
 \newcommand{\@homework@miscenvheaderfont}{\bfseries}
 \newcommand{\@homework@solutionheaderfont}{\bfseries\itshape}
 \newcommand{\@homework@claimproofheaderfont}{\itshape}
+
+%% Separator symbols
+\newcommand{\@homework@exerciseseparator}{.}
+\newcommand{\@homework@funfactseparator}{.}
+\newcommand{\@homework@claimseparator}{:}
+\newcommand{\@homework@miscenvseparator}{.}
+\newcommand{\@homework@solutionseparator}{:}
+\newcommand{\@homework@claimproofseparator}{:}
 
 %%% ----- Definition of theorem-like environments -----
 
@@ -414,7 +423,7 @@
 %% exercise (numbered)
 \theoremstyle{exercise}
 \theoremheaderfont{\normalfont\@homework@exerciseheaderfont}
-\theoremseparator{.}
+\theoremseparator{\@homework@exerciseseparator}
 \theorempreskip{\@homework@afterthmspace}
 \theorempostskip{\@homework@afterthmspace}
 \newtheorem{exercise}[exercisecounter]{\protect\GetTranslation{exercise}}
@@ -423,10 +432,18 @@
 \theoremstyle{exercisenonumber}
 \renewtheorem{exercise*}{\protect\GetTranslation{exercise}}
 
+%% funfact (unnumbered)
+\theoremstyle{exercisenonumber}
+\theoremheaderfont{\normalfont\@homework@funfactheaderfont}
+\theoremseparator{\@homework@funfactseparator}
+\theorempreskip{\@homework@afterthmspace}
+\theorempostskip{\@homework@afterthmspace}
+\newtheorem{funfact}{\protect\GetTranslation{funfact}}
+
 % claim (numbered)
 \theoremstyle{exercise}
 \theoremheaderfont{\normalfont\@homework@claimheaderfont}
-\theoremseparator{:}
+\theoremseparator{\@homework@claimseparator}
 \theorempreskip{\@homework@afterclaimspace}
 \theorempostskip{\@homework@afterclaimspace}
 \newtheorem{claim}[claimcounter]{\protect\GetTranslation{claim}}
@@ -438,7 +455,7 @@
 %% miscenv
 \theoremstyle{miscenv}
 \theoremheaderfont{\normalfont\@homework@miscenvheaderfont}
-\theoremseparator{.}
+\theoremseparator{\@homework@miscenvseparator}
 \theorempreskip{\@homework@afterthmspace}
 \theorempostskip{\@homework@afterthmspace}
 \newtheorem{miscenv}{}
@@ -446,7 +463,7 @@
 %% Solution
 \theoremstyle{solution}
 \theoremheaderfont{\normalfont\@homework@solutionheaderfont}
-\theoremseparator{:}
+\theoremseparator{\@homework@solutionseparator}
 \theorempreskip{\@homework@afterthmspace}
 \theorempostskip{\@homework@afterthmspace}
 % There are two ways of defining an environment whose content is not shown if a
@@ -503,7 +520,7 @@
 \newcommand{\@homework@claimproofqedsymbol}{\@homework@qedtriangle}
 \theoremsymbol{\@homework@claimproofqedsymbol}
 \theoremheaderfont{\normalfont\@homework@claimproofheaderfont}
-\theoremseparator{:}
+\theoremseparator{\@homework@claimproofseparator}
 \theorempreskip{\@homework@afterclaimspace}
 \theorempostskip{\@homework@afterclaimspace}
 \newtheorem{claimproof}{\protect\GetTranslation{claimproof}}
@@ -552,6 +569,8 @@
 \DeclareTranslation{German}{exercise}{Aufgabe}
 \DeclareTranslation{English}{exercise-plural}{Exercises}
 \DeclareTranslation{German}{exercise-plural}{Aufgaben}
+\DeclareTranslation{English}{funfact}{Fact of the Week}
+\DeclareTranslation{German}{funfact}{Information der Woche}
 \DeclareTranslation{English}{solution}{Proposed solution}
 \DeclareTranslation{German}{solution}{Lösungsvorschlag}
 \DeclareTranslation{English}{solution-plural}{Proposed solutions}
