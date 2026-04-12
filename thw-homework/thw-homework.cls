@@ -9,10 +9,6 @@
 % and also \UseName, which according to the LaTeX Companion 3, page 528 was added in 2022.
 \NeedsTeXFormat{LaTeX2e}[2022/06/02]
 
-%% Move to template
-% \RequirePackage[shortlabels]{enumitem}
-% \setlist[enumerate]{label=(\alph*)}
-
 %%% ----- Package options -----
 
 % List of allowed package options
