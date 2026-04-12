@@ -19,8 +19,11 @@ Information on how to install `.cwl` files may be found
 
 ## thw-math
 
-This is the main package that I load in every math-related document (unless I have a specific reason not to).
-It loads several packages that are either standard to include in any math-related document (such as amsmath) or that I personally use frequently enough to not want to bother loading them separately (such as tikz-cd).
+This is the main package that I load in every math-related document
+(unless I have a specific reason not to).
+It loads several packages that are either standard to include in any math-related document
+(such as amsmath) or that I personally use frequently enough to not want to bother 
+loading them separately (such as tikz-cd).
 It also defines various commands and (a few) environments that I use frequently.
 For a precise list of additions, look into the style file.
 
@@ -30,12 +33,14 @@ or whose realisation should depend on the type of document.
 This includes the definition of theorem-like environments.
 Such tasks are handled by the more specialised packages in this collection.
 
-**Known problems:** I am not aware of any. However, this package loads the font-related packages dsfont and mathrsfs and the microtype package, which could conceivably conflict with some other things you are doing.
+**Known problems:** I am not aware of any. However, this package loads the font-related packages 
+dsfont and mathrsfs and the microtype package, which could conceivably conflict with 
+some other things you are doing.
 
 ## thw-thmtoc
 
-This package provides an interface for automatically creating a "List of Theorems", "List of Definitions"
-and similar lists, which I refer to as "thmtocs".
+This package provides an interface for automatically creating a "List of Theorems", 
+"List of Definitions" and similar lists, which I refer to as "thmtocs".
 This is based on the functionality of the titletoc package.
 The packages thw-theorems and thw-lecture-notes use thw-thmtoc to define thmtocs.
 For more details, see the readme file for thw-thmtoc.
