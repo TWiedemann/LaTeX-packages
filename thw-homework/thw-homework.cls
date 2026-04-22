@@ -428,14 +428,6 @@
 \theoremstyle{exercisenonumber}
 \renewtheorem{exercise*}{\protect\GetTranslation{exercise}}
 
-%% funfact (unnumbered)
-\theoremstyle{exercisenonumber}
-\theoremheaderfont{\normalfont\@homework@funfactheaderfont}
-\theoremseparator{\@homework@funfactseparator}
-\theorempreskip{\@homework@afterthmspace}
-\theorempostskip{\@homework@afterthmspace}
-\newtheorem{funfact}{\protect\GetTranslation{funfact}}
-
 % claim (numbered)
 \theoremstyle{exercise}
 \theoremheaderfont{\normalfont\@homework@claimheaderfont}
@@ -465,9 +457,11 @@
 % There are two ways of defining an environment whose content is not shown if a
 % boolean switch is active:
 % 1. Using \NewDocumentEnvironment with an explicit body argument b.
-%    (The "+" prefix before "b" esnures that multiple paragraphs in the body are allowed.)
+%    (The "+" prefix before "b" ensures that multiple paragraphs in the body are allowed.)
 %    This does not work if the body contains verbatim content, e.g. from the verbatim environment.
 %    See https://tex.stackexchange.com/a/489459/166297
+%    It also seems that symbols such as "#" (e.g. within a URL) cause problems
+%    in this approach.
 % 2. Using the "comment" package, we can use \excludecomment to define an environment
 %    that does nothing and does not print its content.
 %    In such environments, verbatim content is allowed.
@@ -506,6 +500,40 @@
 	}%
 }{% If @homework@solutions is false, use \excludecomment
 	\excludecomment{solution-fragile}
+}
+
+%% funfact (unnumbered)
+%% Only displayed if solutions=false, which works in the same as for "solution"
+\theoremstyle{exercisenonumber}
+\theoremheaderfont{\normalfont\@homework@funfactheaderfont}
+\theoremseparator{\@homework@funfactseparator}
+\theorempreskip{\@homework@afterthmspace}
+\theorempostskip{\@homework@afterthmspace}
+\newtheorem{funfact-internal}{\protect\GetTranslation{funfact}}
+\NewDocumentEnvironment{funfact}{o +b}{%
+	\ifbool{@homework@solutions}{}{% If @homework@solutions is true, do nothing
+		% Wrap funfact-internal, and pass on the optional argument correctly.
+		\IfNoValueTF{#1}{%
+			\begin{funfact-internal}
+				#2
+			\end{funfact-internal}
+		}{%
+			\begin{funfact-internal}[#2]
+				#2
+			\end{funfact-internal}
+		}%
+	}
+}{}
+\ifbool{@homework@solutions}{% If @homework@solutions is true, use \excludecomment
+	\excludecomment{funfact-fragile}
+}{
+	\NewDocumentEnvironment{funfact-fragile}{o}{%
+		% Wrap funfact-internal, and pass on the optional argument correctly.
+		\IfNoValueTF{#1}{\begin{funfact-internal}}{\begin{funfact-internal}[#1]}
+	}{%
+		\end{funfact-internal}%
+		\ignorespacesafterend% see https://tex.stackexchange.com/a/82860/166297
+	}%
 }
 
 %% Proof of claim
