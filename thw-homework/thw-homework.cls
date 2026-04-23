@@ -277,7 +277,8 @@
 
 %%% ----- Document title (\maketitle) -----
 
-% The string "Sheet 5" of "Final exam" that appears in the title,
+% \@homework@sheetstring is the string that appears in the title,
+% e.g. "Sheet 5" or "Final exam",
 % possibly appended by ": Solution proposal",
 % and surrounded by \@homework@sheettitlesymb (e.g. --).
 \newcommand{\@homework@sheetstring}{
