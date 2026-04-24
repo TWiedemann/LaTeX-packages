@@ -196,6 +196,7 @@
 \isom
 \nisom
 \congruent
+\ncongruent
 \equalshat
 \equalstop{top}
 
