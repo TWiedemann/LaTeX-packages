@@ -1,0 +1,78 @@
+\ProvidesPackage{thw-theorems-dict}
+\RequirePackage{translations}
+
+\newcommand{\@thwthm@crefname}[3]{
+	\ifbool{@thwthm@cleveref}{%
+		\AddToHook{begindocument}{%
+			\crefname{#1}{#2}{#3}
+		}%
+	}{}
+}
+
+\newcommand{\DeclareThmTranslation}[5]{
+	\DeclareTranslation{English}{#1}{#2}
+	\DeclareTranslation{English}{#1-plural}{#3}
+	\DeclareTranslation{English}{#1-cref}{#2} % For tcolorbox-cref
+	\DeclareTranslation{English}{#1-cref-plural}{#3}
+	\DeclareTranslation{German}{#1}{#4}
+	\DeclareTranslation{German}{#1-plural}{#5}
+	\DeclareTranslation{German}{#1-cref}{#4}
+	\DeclareTranslation{German}{#1-cref-plural}{#5}
+	\@thwthm@crefname{#1}{\GetTranslation{#1-cref}}{\GetTranslation{#1-cref-plural}}
+}
+
+\newcommand{\DeclareCrefThmTranslation}[5]{
+	\DeclareTranslation{English}{#1-cref}{#2}
+	\DeclareTranslation{English}{#1-cref-plural}{#3}
+	\DeclareTranslation{German}{#1-cref}{#4}
+	\DeclareTranslation{German}{#1-cref-plural}{#5}
+	\@thwthm@crefname{#1}{\GetTranslation{#1}}{\GetTranslation{#1-plural}}
+}
+
+\DeclareThmTranslation{definition}{Definition}{Definitions}{Definition}{Definitionen}
+\DeclareThmTranslation{notation}{Notation}{Notations}{Notation}{Notationen}
+\DeclareThmTranslation{theorem}{Theorem}{Theorems}{Satz}{Sätze}
+\DeclareThmTranslation{lemma}{Lemma}{Lemmas}{Lemma}{Lemmas}
+\DeclareThmTranslation{corollary}{Corollary}{Corollaries}{Korollar}{Korollare}
+\DeclareThmTranslation{lemcorollary}{Corollary}{Corollaries}{Korollar}{Korollare}
+\DeclareThmTranslation{proposition}{Proposition}{Propositions}{Proposition}{Propositionen}
+\DeclareThmTranslation{proof}{Proof}{Proofs}{Beweis}{Beweise}
+\DeclareThmTranslation{claim}{Claim}{Claims}{Behauptung}{Behauptungen}
+\DeclareThmTranslation{algorithm}{Algorithm}{Algorithms}{Algorithmus}{Algorithmen}
+\DeclareThmTranslation{remark}{Remark}{Remarks}{Bemerkung}{Bemerkungen}
+\DeclareThmTranslation{example}{Example}{Examples}{Beispiel}{Beispiele}
+\DeclareThmTranslation{examples}{Examples}{Examples}{Beispiele}{Beispiele}
+\@thwthm@crefname{examples}{\GetTranslation{example}}{\GetTranslation{example-plural}} % Redefine cref
+\DeclareThmTranslation{counterexample}{Counterexample}{Counterexamples}{Gegenbeispiel}{Gegenbeispiele}
+\DeclareThmTranslation{convention}{Convention}{Conventions}{Konvention}{Konventionen}
+\DeclareThmTranslation{secconvention}{Convention for this section}{Conventions for this section}{Konvention für diesen Abschnitt}{Konventionen für diesen Abschnitt}
+\DeclareCrefThmTranslation{secconvention}{Convention}{Conventions}{Konvention}{Konventionen}
+
+\DeclareThmTranslation{exercise}{Exercise}{Exercises}{Übung}{Übungen}
+\DeclareThmTranslation{observation}{Observation}{Observations}{Beobachtung}{Beobachtungen}
+\DeclareThmTranslation{fact}{Fact}{Facts}{Fakt}{Fakten}
+\DeclareThmTranslation{reminder}{Reminder}{Reminders}{Erinnerung}{Erinnerungen}
+\DeclareThmTranslation{construction}{Construction}{Constructions}{Konstruktion}{Konstruktionen}
+\DeclareThmTranslation{note}{Note}{Notes}{Notiz}{Notizen}
+\DeclareThmTranslation{warning}{Warning}{Warnings}{Warnung}{Warnungen}
+\DeclareThmTranslation{goal}{Goal}{Goals}{Ziel}{Ziele}
+\DeclareThmTranslation{miscthm}{}{}{}{}
+
+\DeclareTranslation{English}{Claim-short}{Cl.}
+\DeclareTranslation{German}{Claim-short}{Beh.}
+
+\DeclareTranslation{English}{WrittenBy}{written by}
+\DeclareTranslation{German}{WrittenBy}{geschrieben von}
+\DeclareTranslation{English}{BasedOn}{based on a lecture by}
+\DeclareTranslation{German}{BasedOn}{basierend auf einer Vorlesung von}
+
+\DeclareTranslation{English}{Theorem-List}{List of Theorems}
+\DeclareTranslation{German}{Theorem-List}{Liste der Sätze}
+\DeclareTranslation{English}{Lemma-List}{List of Lemmas and Propositions}
+\DeclareTranslation{German}{Lemma-List}{Liste der Lemmas und Propositionen}
+\DeclareTranslation{English}{Definition-List}{List of Definitions}
+\DeclareTranslation{German}{Definition-List}{Liste der Definitionen}
+\DeclareTranslation{English}{Algorithm-List}{List of Algorithms}
+\DeclareTranslation{German}{Algorithm-List}{Liste der Algorithmen}
+\DeclareTranslation{English}{Theorem-Lemma-List}{List of Theorems and Lemmas}
+\DeclareTranslation{German}{Theorem-Lemma-List}{Liste der Sätze und Lemmas}

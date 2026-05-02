@@ -1,0 +1,544 @@
+%%% This package defines many theorem-like environments with a variety of
+%%% customisation options.
+
+%%% ----- Identification part ----
+
+\ProvidesPackage{thw-theorems}
+% We use the LaTeX 3 syntax for key/value package options, which was introduced to
+% the LaTeX kernel in 2020,
+% and also \UseName, which according to the LaTeX Companion 3, page 528 was added in 2022.
+\NeedsTeXFormat{LaTeX2e}[2022/06/02]
+
+%%% ----- Package options -----
+
+\newcommand{\@thwthm@maxnumthmtocs}{9}
+
+\ExplSyntaxOn
+% Define clist (comma-separated list) variables
+\clist_new:N \l_thwthm_tcbenvs % List of environments for which tcolorbox is used
+\clist_new:N \l_thwthm_italicenvs % List of environments with italic content (if unboxed)
+\clist_new:N \l_thwthm_envnames % List of all theorem-like environments defined by package
+% Default values for clists
+\clist_set:Nn \l_thwthm_envnames {% Claim is not added because it is hard-coded
+	definition,notation,theorem,lemma,corollary,lemcorollary,proposition,algorithm,
+	remark,example,examples,convention,secconvention,counterexample,counterexamples,
+	exercise,observation,fact,reminder,construction,note,warning,goal,
+	miscthm
+}
+% Define package options
+\DeclareKeys{
+	% Whether line break occurs after a theorem heading
+	thmbreak.if = @thwthm@thmbreak,
+	% Counter within which theorems are numbered
+	theoremlevel.store = \@thwthm@theoremlevel,
+	cleveref.if = @thwthm@cleveref,
+	% If given, only the environments explicitly specified by the user are defined
+	no-standard-environments.code = {
+		\clist_clear:N \l_thwthm_envnames
+	},
+	% Additional environments that should be defined
+	additional-environments.code = {
+		\clist_put_right:Nn \l_thwthm_envnames {#1} % Append argument to clist
+		\clist_remove_duplicates:N \l_thwthm_envnames % Remove duplicates
+	},
+	% Environments for which tcolorbox is used
+	tcb-environments.code = {
+		\clist_set:Nn \l_thwthm_tcbenvs {#1} % Store argument as clist
+	},
+	% Use the default choice for tcb-environments and the corresponding default colours
+	tcb-default.if = @thwthm@tcbdefault,
+	% Environments with italic content
+	italic-environments.code = {
+		\clist_set:Nn \l_thwthm_italicenvs {#1} % Store argument as clist
+	}
+}
+% Package options thmtoc1, thmtoc2, ..., thmtoc9. The argument given to these
+% options is the list of environments which use the corresponding thmtoc.
+\int_step_inline:nnn{1}{\@thwthm@maxnumthmtocs}{%
+	% Define clist containing the environments in thmtoc with number #1.
+	% We use \clist_new:c instead of \clist_new:N so that "#1" in the list name
+	% is properly evaluated.
+	\clist_new:c { l_thwthm_thmtoc#1_envs }
+	\DeclareKeys{
+		thmtoc#1 .code = {
+            \clist_set:cn { l_thwthm_thmtoc#1_envs } { ##1 }
+		}
+	}
+}
+\ExplSyntaxOff
+
+% Default values for package options
+\SetKeys{
+	thmbreak = false,
+	theoremlevel = section,
+	cleveref=false,
+	italic-environments={theorem, lemma, corollary, lemcorollary, proposition}
+}
+
+\ProcessKeyOptions
+
+
+%%% ----- Package loading -----
+
+\RequirePackage{translations} % Multi-language support
+\RequirePackage{thw-theorems-dict} % Dictionary
+\RequirePackage{thw-thmtoc} % List of theorems etc.
+\RequirePackage{tikz,tcolorbox} % For boxed theorems
+\RequirePackage[amsmath, hyperref, thmmarks]{ntheorem} % For theorem environments
+
+% tcolorbox libraries and settings
+\tcbuselibrary{theorems,breakable,skins}
+\tcbset{label separator=}
+
+%%% ----- Global variables and execution of some package options -----
+
+% Some colours
+\definecolor{@thwthm@yellowboxframe}{RGB}{135,131,98}
+\definecolor{@thwthm@yellowboxback}{RGB}{255,255,191}
+
+% \settcbcolor sets @thmthm@#1colback to #2 and @thmthm@#1colframe to #3.
+\newcommand{\settcbcolor}[3]{
+    \colorlet{@thwthm@#1colback}{#2}%
+    \colorlet{@thwthm@#1colframe}{#3}%
+}
+\ExplSyntaxOn
+% For each environment, sets the tcb color to the default value black.
+\clist_map_inline:Nn \l_thwthm_tcbenvs {
+    \settcbcolor{#1}{black!10}{black}
+}
+\ifbool{@thwthm@tcbdefault}{
+	% Append "default" choice of environments to \l_thwthm_tcbenvs
+	\clist_put_right:Nn \l_thwthm_tcbenvs {
+		theorem, definition, notation, lemma, corollary, lemcorollary, proposition,
+		convention, secconvention
+	}
+	\clist_remove_duplicates:N \l_thwthm_tcbenvs
+	% Set default colours
+	\settcbcolor{theorem}{red!10!white}{red!75!black}%
+	\settcbcolor{definition}{@thwthm@yellowboxback}{@thwthm@yellowboxframe}%
+	\settcbcolor{notation}{@thwthm@yellowboxback}{@thwthm@yellowboxframe}%
+	\settcbcolor{lemma}{blue!10!white}{blue!75!black}%
+	\settcbcolor{corollary}{green!10!white}{green!50!black}%
+	\settcbcolor{lemcorollary}{blue!15!white}{blue!50!black}%
+	\settcbcolor{proposition}{violet!10!white}{violet!100!white}%
+	\settcbcolor{convention}{black!5!white}{black!90!white}%
+	\settcbcolor{secconvention}{black!5!white}{black!90!white}%
+}{}
+\ExplSyntaxOff
+
+% Counters
+\ifdefstring{\@thwthm@theoremlevel}{none}{
+	\newcounter{thmcounter}
+}{
+	\newcounter{thmcounter}[\@thwthm@theoremlevel]
+}
+\renewcommand{\thethmcounter}{\UseName{the\@thwthm@theoremlevel}.\arabic{thmcounter}}
+\newcounter{claimcounter}
+\numberwithin{claimcounter}{thmcounter}
+\renewcommand{\theclaimcounter}{\arabic{claimcounter}}
+
+% QED symbols
+% Each symbol starts with a bit of horizontal space to ensure a certain
+% minimum distance from the environment content.
+\newcommand{\qedbox}{\hspace{0.5cm}\begin{tikzpicture}[scale=0.23]
+	\draw (0,0) -- (1,0) -- (1,1) -- (0,1) -- cycle;
+\end{tikzpicture}} % Square
+\newcommand{\qedtriangle}{\hspace{0.5cm}\begin{tikzpicture}[scale=0.23]
+	\draw (0,0) -- (1,0) -- (0,1) -- cycle;
+\end{tikzpicture}} % Triangle
+
+% Lengths and spacing commands
+\newlength{\@thwthm@afterthmspace}% Placed after and before every unboxed theorem
+\setlength{\@thwthm@afterthmspace}{0.7\baselineskip plus 0.2\baselineskip minus 0.1\baselineskip}
+\newlength{\@thwthm@beforeclaimspace}% Placed before claims and proofs of claims
+\setlength{\@thwthm@beforeclaimspace}
+{0.2\baselineskip plus 0.1\baselineskip minus 0.1\baselineskip}
+\newlength{\@thwthm@afterboxspace}% Placed after and before every tcolorbox
+\setlength{\@thwthm@afterboxspace}{0.4cm plus 0.2cm minus 0.15cm} 
+
+% Fonts
+\newcommand{\@thwthm@proofheadfont}{\normalfont\bfseries\itshape}
+\newcommand{\@thwthm@claimproofheadfont}{\normalfont\itshape}
+\newcommand{\@thwthm@thmheadfont}{\normalfont\bfseries}
+\newcommand{\@thwthm@tcbthmheadfont}{\normalfont\bfseries}
+\newcommand{\@thwthm@claimheadfont}{\normalfont\scshape}
+\newcommand{\@thwthm@thmbodyfont}{\normalfont}
+\newcommand{\@thwthm@claimbodyfont}{\normalfont\itshape}
+
+%%% ----- Theorem styles (ntheorem) -----
+%%% For each style "name" that may be used in theorem-like environments, styles
+%%% "namebreak", "namebreaknonumber", "namenobreak", "namenobreaknonumber" should
+%%% be defined.
+%%% break styles insert a line break after the theorem name, nobreaks styles do not.
+%%% nonumber styles are unnumbered.
+
+%% break styles
+\newtheoremstyle{thmbreak}% Like "break" in ntheorem, but theorem number and name are switched and optional name is without brackets
+	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##2\ ##1\theorem@separator}\hbox{\strut}}}]}%
+	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##2\ ##1\ ##3\theorem@separator}\hbox{\strut}}}]}
+\newtheoremstyle{thmbreaknonumber}% Like thmbreak but without number
+	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##1\theorem@separator}\hbox{\strut}}}]}%
+	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##1\ ##3\theorem@separator}\hbox{\strut}}}]}
+\newtheoremstyle{miscbreak}% Like "thmbreak" but only with optional name
+	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##2\ \theorem@separator}\hbox{\strut}}}]}%
+	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##2\ ##3\theorem@separator}\hbox{\strut}}}]}
+\newtheoremstyle{miscbreaknonumber}% Like thmbreak but without number
+	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont \theorem@separator}\hbox{\strut}}}]}%
+	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##3\theorem@separator}\hbox{\strut}}}]}
+
+%% nobreak styles
+\newtheoremstyle{thmnobreak}% Exactly like "plain" in ntheorem
+	{\item[\hskip\labelsep \theorem@headerfont ##2\ ##1\theorem@separator]}%
+	{\item[\hskip\labelsep \theorem@headerfont ##2\ ##1\ ##3\theorem@separator]}%
+\newtheoremstyle{thmnobreaknonumber}% Like "thmnobreak" but without number
+	{\item[\hskip\labelsep \theorem@headerfont ##1\theorem@separator]}%
+	{\item[\hskip\labelsep \theorem@headerfont ##1\ ##3\theorem@separator]}%
+\newtheoremstyle{miscnobreak}% Only optional name
+	{\item[\hskip\labelsep \theorem@headerfont ##2\theorem@separator]}%
+	{\item[\hskip\labelsep \theorem@headerfont ##2\ ##3\theorem@separator]}%
+\newtheoremstyle{miscnobreaknonumber}
+	{\item[\hskip\labelsep \theorem@headerfont \theorem@separator]}%
+	{\item[\hskip\labelsep \theorem@headerfont ##3\theorem@separator]}%
+
+%% Proof and claim styles
+\newtheoremstyle{proofbreak}% Like thmbreak, but 1. no number and 2. if optional name is given, only the optional name is displayed
+	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##1\theorem@separator}\hbox{\strut}}}]}%
+	{\item[\rlap{\vbox{\hbox{\hskip\labelsep \theorem@headerfont ##3\theorem@separator}\hbox{\strut}}}]}
+\newtheoremstyle{proofnobreak}% Like thmnobreak, but 1. no number and 2. if optional name is given, only the optional name is displayed
+	{\item[\hskip\labelsep \theorem@headerfont ##1\theorem@separator]}%
+	{\item[\hskip\labelsep \theorem@headerfont ##3\theorem@separator]}%
+
+%% Claim and proof of claim styles
+\newtheoremstyle{claim}% Exactly like "plain" in ntheorem
+	{\item[\hskip\labelsep \theorem@headerfont ##1\ ##2\theorem@separator]}%
+	{\item[\hskip\labelsep \theorem@headerfont ##1\ ##2\ (##3)\theorem@separator]}%
+\newtheoremstyle{claimnonumber}%
+	{\item[\hskip\labelsep \theorem@headerfont ##1\theorem@separator]}%
+	{\item[\hskip\labelsep \theorem@headerfont ##1\ (##3)\theorem@separator]}%
+\newtheoremstyle{claimproof}% Like "claim" but 1. without a number and 2. if an optional name is given, only the optional name is displayed
+	{\item[\hskip\labelsep \theorem@headerfont ##1\theorem@separator]}%
+	{\item[\hskip\labelsep \theorem@headerfont ##3\theorem@separator]}%
+
+%%% ----- Definition of theorem-like environments -----
+
+%%% -- Commands for defining unboxed environments --
+
+% Settings for fonts used by all unboxed environments.
+% \theorembodyfont is not set here because it depends on the environment.
+\theoremnumbering{arabic}
+\theoremheaderfont{\@thwthm@thmheadfont}
+\ifbool{@thwthm@thmbreak}{\theoremseparator{\vspace*{.5\parskip}}}{\theoremseparator{.}}
+\theoremsymbol{}
+\theorempreskip{\@thwthm@afterthmspace}
+\theorempostskip{\@thwthm@afterthmspace}
+
+% Command for defining an unboxed theorem-like environment and the corresponding
+% starred (unnumbered) variant.
+% #1: LaTeX name of the environment, i.e. the one used in \begin{...} and \end{...}.
+%     The name \GetTranslation{#1} is used as the display name of the environment.
+% #2: Theorem style that is used. The style #3nonumber is used for the starred variant.
+% Internal environments nth-#1 and nth-#1* are defined. The environments #1 and #1*
+% are wrappers for these internal environments. 
+% The defined environment #1 accepts three arguments:
+% - Additional name (usually in brackets after "x.y Theorem")
+% - A label for referencing.
+% - A description for the thmtoc entry.
+% The defined environment #1* has only two arguments because it cannot be given a label,
+% but is otherwise the same.
+\ExplSyntaxOn
+\newcommand{\@thwthm@defineunboxedtheorem}[2]{%
+	\theoremstyle{#2}% Choose theorem style
+	\newtheorem{nth-#1}[thmcounter]{\protect\GetTranslation{#1}}% Define internal environment
+	\newenvironment{#1}[3]% Define wrapper environment
+		{%
+			\ifblank{##1}{\begin{nth-#1}}{\begin{nth-#1}[##1]}% Pass on optional argument
+			\ifblank{##2}{}{\label[#1]{##2}}% Set label
+			% "for loop" over all possible thmtocs
+			% Note: The number of "#" doubles for each step, so ####1 is the "third level"
+			\int_step_inline:nnn{1}{\@thwthm@maxnumthmtocs}{%
+				\clist_if_in:cnT {l_thwthm_thmtoc####1_envs} {#1}{
+					\thmtocaddentry[####1]{\thethmcounter}{##3}
+				}
+			}
+		}%
+		{\end{nth-#1}}%
+	% Define starred (unnumbered) environment
+	\theoremstyle{#2nonumber}
+	\renewtheorem{nth-#1*}{\protect\GetTranslation{#1}}
+	\newenvironment{#1*}[1]
+		{\ifblank{##1}{\begin{nth-#1*}}{\begin{nth-#1*}[##1]}}
+		{\end{nth-#1*}}
+}
+\ExplSyntaxOff
+
+%%% -- Commands for defining boxed environments --
+
+% Default settings for tcolorboxes
+\tcbset{@thwthm@thmbox/.style={
+	fonttitle=\@thwthm@tcbthmheadfont, % bold title
+	theorem number and name, % "1.2.3 Theorem" instead of "Theorem 1.2.3"
+	separator sign none, % No symbol between "1.2.3 Theorem" and header
+	beforeafter skip=\@thwthm@afterboxspace, % Minimum distance before and after box
+	breakable, % Boxes can break over page
+	% enhanced jigsaw % I don't think I need this TODO
+}}
+
+% Command for defining a boxed theorem-like environment and the corresponding
+% starred (unnumbered) variant.
+% #1: LaTeX name of the environment, i.e., the one used in \begin{...} and \end{...}.
+%     The name \GetTranslation{#1} is the display name of the environment and the
+%     name \GetTranslation{#1-cref} (or \GetTranslation{#1-cref-plural}) is the one
+%     used by cleveref.
+% Internal environments tcb-#1 and tcb-#1* are defined. The environments #1 and #1*
+% are wrappers for these internal environments. They have additional arguments
+% for labels and thmtoc entries, just like boxed environments
+\ExplSyntaxOn
+\newcommand{\@thwthm@definetcbtheorem}[1]{
+	% Define internal tcolorbox environment (with or without crefname argument)
+	\ifbool{@thwthm@cleveref}{
+		\newtcbtheorem[
+			% use ~ for protected space in \ExplSyntax mode
+			use~counter=thmcounter, % number within=\@thwthm@theoremlevel, % TODO: is this needed?
+			crefname={\protect\GetTranslation{#1-cref}}{\protect\GetTranslation{#1-cref-plural}} % For cleveref
+		]{tcb-#1} % Name of environment
+			{\protect\GetTranslation{#1}} % Header of environment
+			{% Additional options
+				colback=@thwthm@#1colback, colframe=@thwthm@#1colframe, % Colours
+				@thwthm@thmbox % Further settings
+			}
+			{} % Prefix for label
+	}{% Same as above, but without argument "crefname=..."
+		\newtcbtheorem[
+			use~counter=thmcounter, % Counter % number~within=\@thwthm@theoremlevel TODO: is this needed?
+		]{tcb-#1} % Name of environment
+			{\protect\GetTranslation{#1}} % Header of environment
+			{% Additional options
+				colback=@thwthm@#1colback,colframe=@thwthm@#1colframe, % Colours
+				@thwthm@thmbox % Further settings
+			}
+			{} % Prefix for label
+	}
+	% Define wrapper environment
+	\newenvironment{#1}[3]
+		{
+			\begin{tcb-#1}{##1}{##2}
+			% "for loop" over all possible thmtocs
+			\int_step_inline:nnn{1}{\@thwthm@maxnumthmtocs}{%
+				\clist_if_in:cnT {l_thwthm_thmtoc####1_envs} {#1}{
+					\thmtocaddentry[####1]{\thethmcounter}{##3}
+				}
+			}
+		}{%
+			\end{tcb-#1}
+		}
+	% Define starred wrapper environment
+	\newenvironment{#1*}[1]
+		{\begin{tcb-#1*}{##1}}
+		{\end{tcb-#1*}}
+}
+\ExplSyntaxOff
+
+%%% -- Actual definitions of the environments --
+
+% Command to define a theorem-like that is either boxed or unboxed, depending
+% on whether its name appears in the list of environments that should be boxed.
+% Further, an italic body font is used for unboxed environments that appear in the
+% corresponding list
+% #1: LaTeX name of the environment, i.e., the one used in \begin{...} and \end{...}.
+% #2: Theorem style that is used (if unboxed). More precisely,
+%     the style #2break(nonumber) is used if \@thmthm@thmbreak is true
+%     and #2nobreak(nonumber) otherwise
+\ExplSyntaxOn
+\newcommand{\@thwthm@definetheorembylists}[2]{
+	\clist_if_in:NnTF \l_thwthm_tcbenvs {#1}{
+		% Define boxed environment
+		\@thwthm@definetcbtheorem{#1}
+	}{
+		% Define unboxed environment
+		\theorembodyfont{\@thwthm@thmbodyfont}% Default value for body font
+		\clist_if_in:NnT \l_thwthm_italicenvs {#1}{
+			\theorembodyfont{\normalfont\itshape}% Change body font if necessary
+		}
+		\ifbool{@thwthm@thmbreak}{
+			\@thwthm@defineunboxedtheorem{#1}{#2break}
+		}{
+			\@thwthm@defineunboxedtheorem{#1}{#2nobreak}
+		}
+	}
+}
+
+% Define all theorem-like environments in a "for" loop.
+% The actual code is executed at the time of \begin{document} because,
+% if the option cleveref is given, the code only works if cleveref has already
+% been loaded. Executing the code later ensures that cleveref may be loaded
+% after this package.
+\AddToHook{begindocument}{
+	\clist_map_inline:Nn \l_thwthm_envnames {
+		\ifstrequal{#1}{miscthm}{
+			\@thwthm@definetheorembylists{#1}{misc}
+		}{
+			\@thwthm@definetheorembylists{#1}{thm}
+		}
+	}
+}
+\ExplSyntaxOff
+
+
+%%% --- Definition of claims ---
+
+\theoremstyle{claim}
+
+\theoremheaderfont{\normalfont\scshape}
+\theorembodyfont{\normalfont\itshape}
+\theoremseparator{:}
+\theorempreskip{\@thwthm@beforeclaimspace}
+\theorempostskip{0pt}
+\theoremsymbol{}
+	
+\theoremstyle{claim}
+% Internal environment
+\newtheorem{nth-claim}[claimcounter]{\protect\GetTranslation{claim}}%
+% Wrapper environment with additional argument for label
+\newenvironment{claim}[2]%
+	{%
+		\ifblank{#1}{\begin{nth-claim}}{\begin{nth-claim}[#1]}%
+		\ifblank{#2}{}{\label[claim]{#2}}%
+	}%
+	{\end{nth-claim}}%
+\theoremstyle{claimnonumber}
+\renewtheorem{nth-claim*}{\protect\GetTranslation{claim}}
+\newenvironment{claim*}[1]
+	{\ifblank{#1}{\begin{nth-claim*}}{\begin{nth-claim*}[#1]}}
+	{\end{nth-claim*}}
+
+%%% --- Definition of proofs ---
+
+\ifbool{@thwthm@thmbreak}
+	{\theoremstyle{proofbreak}\theoremseparator{:\vspace*{.5\parskip}}}
+	{\theoremstyle{proofnobreak}\theoremseparator{:}}
+
+\theoremheaderfont{\@thwthm@proofheadfont}
+\theorembodyfont{\normalfont}
+\theorempreskip{\@thwthm@afterthmspace}
+\theorempostskip{\@thwthm@afterthmspace}
+\theoremsymbol{\qedbox}
+
+\newtheorem{proof}{\protect\GetTranslation{proof}}
+
+%%% --- Definition of proofs of claims ---
+
+\theoremstyle{claimproof}
+
+\theoremheaderfont{\@thwthm@claimproofheadfont}
+\theorembodyfont{\normalfont}
+\theoremseparator{:}
+\theorempreskip{\@thwthm@beforeclaimspace}
+\theorempostskip{0pt}
+\theoremsymbol{\qedtriangle}
+
+\newtheorem{claimproof}{\protect\GetTranslation{proof}}
+
+%%% ----- Referencing commands -----
+% \thmitemref{thm-label}{item-label} produces a reference to x.y~(i) where
+% x.y is the number of the theorem thm-label and (i) is the number of the item
+% item-label. The hyperlink goes to thm-label.
+% The starred version does not produce a hyperlink.
+\NewDocumentCommand{\thmitemref}{s m m}{
+	\IfBooleanTF{#1}{%
+		% Starred command
+		\@ifpackageloaded{hyperref}{%
+			\ref*{#2}~\ref*{#3}%
+		}{%
+			\ref{#2}~\ref{#3}%
+		}%
+	}{
+		% Unstarred command
+		\@ifpackageloaded{hyperref}{%
+			\hyperref[#2]{\ref*{#2}~\ref*{#3}}%
+		}{%
+			\ref{#2}~\ref{#3}%
+		}%
+	}
+}
+% \thmitemcref works like \thmitemref, but prepends the environment name of thm-label.
+\NewDocumentCommand{\thmitemcref}{s m m}{
+	\IfBooleanTF{#1}{
+		% Starred command
+		\@ifpackageloaded{hyperref}{
+			\namecref{#2}~\ref*{#2}~\ref*{#3}
+		}{
+			\namecref{#2}~\ref{#2}~\ref{#3}
+		}
+	}{
+		% Unstarred command
+		\@ifpackageloaded{hyperref}{
+			\namecref{#2}~\hyperref[#2]{\ref*{#2}~\ref*{#3}}
+		}{
+			\namecref{#2}~\ref{#2}~\ref{#3}
+		}
+	}
+}
+% Uses the short version of "Claim", e.g. "Cl."
+\newcommand{\claimshortref}[1]{\GetTranslation{Claim-short}~\ref{#1}}
+
+%%% ----- Proof list -----
+% The environment "prooflist" is intended for proofs with different "canonical" components such as
+% "(1) \implies (2)" or "A \subset B".
+% Example:
+% \begin{prooflist}
+% 	\plimr{(i)}{(ii)}% (i) => (ii)
+% 		...
+% 	\plimr{(ii)}{(i)}% (ii) => (i)
+% 		...
+% \end{prooflist}
+
+%% Internal helper command
+\newcommand*{\@thwthm@prooflistlabel}[1]{#1}
+
+\newenvironment{prooflist}{%
+	\begin{list}{}{
+		\setlength{\labelwidth}{0pt}%
+		\setlength{\labelsep}{4pt}%
+		\setlength{\itemindent}{\labelsep}%
+		\setlength{\leftmargin}{\labelwidth}%
+		\setlength{\itemsep}{0.0cm}%
+		\let\makelabel\@thwthm@prooflistlabel%
+	}
+}{%
+	\end{list}
+}
+
+%% Items within prooflist
+% Some commands use quotation marks, for which we use csquotes if it is loaded.
+% The code is executed at \begin{document} to ensure that it works if csquotes
+% is loaded after this package.
+\AddToHook{begindocument}{
+	\@ifpackageloaded{csquotes}{
+		\newcommand*{\plimr}[2]{\item[\enquote{#1 $ \implies $ #2}]\mbox{}\nopagebreak\par\nopagebreak}
+		\newcommand*{\pliml}[2]{\item[\enquote{#1 $ \impliedby $ #2}]\mbox{}\nopagebreak\par\nopagebreak}
+		\newcommand*{\pliff}[2]{\item[\enquote{#1 $ \iff $ #2}]\mbox{}\nopagebreak\par\nopagebreak}
+		\newcommand*{\pliffthree}[3]{\item[\enquote{#1 $ \iff $ #2 $ \iff $ #3}]\mbox{}\nopagebreak\par\nopagebreak}
+		\newcommand*{\plsymb}[1]{\item[\enquote{#1}]\mbox{}\nopagebreak\par\nopagebreak}
+		\newcommand*{\plsubs}[2]{\item[\enquote{#1 $ \subseteq $ #2}]\mbox{}\nopagebreak\par\nopagebreak}
+		\newcommand*{\plsups}[2]{\item[\enquote{#1 $ \supseteq $ #2}]\mbox{}\nopagebreak\par\nopagebreak}
+	}{
+		\newcommand*{\plimr}[2]{\item[``#1 $ \implies $ #2'']\mbox{}\nopagebreak\par\nopagebreak}
+		\newcommand*{\pliml}[2]{\item[``#1 $ \impliedby $ #2'']\mbox{}\nopagebreak\par\nopagebreak}
+		\newcommand*{\pliff}[2]{\item[``#1 $ \iff $ #2'']\mbox{}\nopagebreak\par\nopagebreak}
+		\newcommand*{\pliffthree}[3]{\item[``#1 $ \iff $ #2 $ \iff $ #3'']\mbox{}\nopagebreak\par\nopagebreak}
+		\newcommand*{\plsymb}[1]{\item[``#1'']\mbox{}\nopagebreak\par\nopagebreak}
+		\newcommand*{\plsubs}[2]{\item[``#1 $ \subseteq $ #2'']\mbox{}\nopagebreak\par\nopagebreak}
+		\newcommand*{\plsups}[2]{\item[``#1 $ \supseteq $ #2'']\mbox{}\nopagebreak\par\nopagebreak}
+	}
+}
+\newcommand*{\pltext}[1]{\item[\emph{#1}]\mbox{}\nopagebreak\par\nopagebreak}
+\newcommand*{\pltextnobreak}[1]{\item[\emph{#1}]}
+
+%%% ----- Enumerations -----
+\newenvironment{defenumerate}[1][]{\begin{enumerate}[label=(\alph*),labelsep=5pt,#1]}{\end{enumerate}}
+\newenvironment{thmenumerate}[1][]{\begin{enumerate}[label=(\alph*),labelsep=5pt,#1]}{\end{enumerate}}
+\newenvironment{lemenumerate}[1][]{\begin{enumerate}[label=(\alph*),labelsep=5pt,#1]}{\end{enumerate}}
+\newenvironment{exenumerate}[1][]{\begin{enumerate}[label=(\arabic*),labelsep=5pt,#1]}{\end{enumerate}}
+\newenvironment{remenumerate}[1][]{\begin{enumerate}[label=(\arabic*),labelsep=5pt,#1]}{\end{enumerate}}
+\newenvironment{proenumerate}[1][]{\begin{enumerate}[label=(\alph*),labelsep=5pt,#1]}{\end{enumerate}}
+\newenvironment{stenumerate}[1][]{\begin{enumerate}[label=(\roman*),labelsep=5pt,#1]}{\end{enumerate}} % For statements, as in "The following assertions are equivalent"

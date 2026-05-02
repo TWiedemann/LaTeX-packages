@@ -47,6 +47,9 @@ For more details, see the readme file for thw-thmtoc.
 
 ## thw-theorems
 
+This package defines many theorem-like environments with a variety of
+customisation options.
+All theorem-like environments may be used with thw-thmtoc.
 
 ## thw-homework
 
