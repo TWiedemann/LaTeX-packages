@@ -99,38 +99,8 @@ to separate live exercises from regular exercises.
 
 The `prooflist` environment may be used (usually within a `solution` environment)
 to give a proof with some "canonical parts", such as implications
-"$ \text{(i)} \implies \text{(ii)}$" or inclusions "$ A \subseteq B $". Example:
-
-```
-\begin{solution}
-	\mbox{}% Ensure line break after "Solution proposal"
-	\begin{prooflist}
-		\plimr{(i)}{(ii)}
-			A proof that statement (i) implies statement (ii).
-		
-		\plsubs{$A$}{$B$}
-			A proof that $A$ is contained in $B$.
-		
-		\pltext{$\phi$ is a homomorphism}
-			A proof that $\phi$ is a homomorphism.
-	\end{prooflist}
-\end{solution}
-```
-
-The following commands are available within a `prooflist`.
-
-| Command | Number of arguments | Displays as |
-| - | - | - |
-| `\plimr` | 2 | "#1 $\implies$ #2" |
-| `\pliml` | 2 | "#1 $\impliedby$ #2" |
-| `\pliff` | 2 | "#1 $\iff$ #2" |
-| `\pliffthree` | 3 | "#1 $\iff$ #2 $\iff$ #3" |
-| `\plsubs` | 2 | "#1 $\subseteq$ #2" |
-| `\plsups` | 2 | "#1 $\supseteq$ #2" |
-| `\plsymb` | 1 | "#1" |
-| `\pltext` | 1 | *#1:* [in italics] |
-| `\pltextnobreak` | 1 | *#1:* [in italics, line break afterwards] |
----
+"$ \text{(i)} \implies \text{(ii)}$" or inclusions "$ A \subseteq B $". For details,
+see the documentation of the package thw-theorems.
 
 # Customisation
 
