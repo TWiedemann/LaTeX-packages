@@ -243,6 +243,7 @@ following list must be preprended with `\@thwthm@`
 | `claimheadfont` | `\normalfont\scshape` | Font for header of claim |
 | `thmbodyfont` | `\normalfont` | Default font for body of unboxed theorem |
 | `claimbodyfont` | `\normalfont\itshape` | Font for body of claim |
+--------
 
 For example, the font for claim headings may be changed from small capitals to
 italics as follows:
