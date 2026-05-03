@@ -27,6 +27,8 @@
 }
 % Define package options
 \DeclareKeys{
+	% Pass on thmtoc-head to thmtoc
+	thmtoc-head.code = {\PassOptionsToPackage{thmtoc-head=#1}{thw-thmtoc}},
 	% Whether line break occurs after a theorem heading
 	thmbreak.if = @thwthm@thmbreak,
 	% Counter within which theorems are numbered
@@ -85,6 +87,7 @@
 \RequirePackage{thw-theorems-dict} % Dictionary
 \RequirePackage{thw-thmtoc} % List of theorems etc.
 \RequirePackage{tikz,tcolorbox} % For boxed theorems
+\RequirePackage{amsmath} % Must be loaded before ntheorem
 \RequirePackage[amsmath, hyperref, thmmarks]{ntheorem} % For theorem environments
 
 % tcolorbox libraries and settings
@@ -226,12 +229,7 @@
 
 % Settings for fonts used by all unboxed environments.
 % \theorembodyfont is not set here because it depends on the environment.
-\theoremnumbering{arabic}
-\theoremheaderfont{\@thwthm@thmheadfont}
-\ifbool{@thwthm@thmbreak}{\theoremseparator{\vspace*{.5\parskip}}}{\theoremseparator{.}}
-\theoremsymbol{}
-\theorempreskip{\@thwthm@afterthmspace}
-\theorempostskip{\@thwthm@afterthmspace}
+
 
 % Command for defining an unboxed theorem-like environment and the corresponding
 % starred (unnumbered) variant.
@@ -248,7 +246,19 @@
 % but is otherwise the same.
 \ExplSyntaxOn
 \newcommand{\@thwthm@defineunboxedtheorem}[2]{%
-	\theoremstyle{#2}% Choose theorem style
+	% ntheorem settings
+	\theoremstyle{#2}
+	\theoremnumbering{arabic}
+	\theoremheaderfont{\@thwthm@thmheadfont}
+	\ifbool{@thwthm@thmbreak}{
+		\theoremseparator{\vspace*{.5\parskip}}
+	}{
+		\theoremseparator{.}
+	}
+	\theoremsymbol{}
+	\theorempreskip{\@thwthm@afterthmspace}
+	\theorempostskip{\@thwthm@afterthmspace}
+	% Define environments
 	\newtheorem{nth-#1}[thmcounter]{\protect\GetTranslation{#1}}% Define internal environment
 	\newenvironment{#1}[3]% Define wrapper environment
 		{%
