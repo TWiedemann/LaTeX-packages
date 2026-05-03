@@ -11,7 +11,7 @@ The following options may be passed to the class with a key-value syntax.
 | `theoremlevel` | `none` or a $\LaTeX$ counter | `section` | The counter within which theorems are numbered, or `none` if they are standalone. |
 | `cleveref` | - | - | Adds [cleveref](https://ctan.org/pkg/cleveref) support. |
 | `no-standard-environments` | - | - | Unless this option is given, a standard list of theorems is defined (see below). |
-| `additional-environments` | list of names | empty | A theorem-like environment is defined for every name in the list. |
+| `additional-environments` | list of names | empty | A theorem-like environment is defined for every name in the list (cf. "Localisation" below). |
 | `tcb-environments` | list of names | empty | A list of theorem names whose environments are printed in a tcolorbox. |
 | `italic-environments` | list of names | `theorem, lemma, corollary, lemcorollary, proposition` | A list of theorem-like environments whose contents are printed in italic (unless the environment is printed in a tcolorbox). |
 | `tcb-default` | - | - | If this option is given, a certain default choice (see below) of environments that should be printed in a tcolorbox is used. |
@@ -251,4 +251,16 @@ italics as follows:
 \makeatletter
 \renewcommand{\@thwthm@claimheadfont}{\normalfont\itshape}
 \makeatother
+```
+
+# Localisation
+
+Each environment with internal name `name` will have the display name
+`\GetTranslation{name}`, using the translations package.
+For all standard environments, translations into English and German are provided.
+If the user defines a new environment with the package option `additional-environments`,
+they should ensure to provide the appropriate translations. A convenient way to
+do this for German and English is to use `\DeclareThmTranslation`, e.g.
+```
+\DeclareThmTranslation{theorem}{Theorem}{Theorems}{Satz}{Sätze}
 ```
