@@ -6,7 +6,7 @@
 \ProvidesClass{thw-homework}
 % We use the LaTeX 3 syntax for key/value package options, which was introduced to
 % the LaTeX kernel in 2020,
-% and also \UseName, which according to the LaTeX Companion 3, page 528 was added in 2022.
+% and also \UseName, which according to the LaTeX Companion 3, page 528, was added in 2022.
 \NeedsTeXFormat{LaTeX2e}[2022/06/02]
 
 %%% ----- Package options -----
