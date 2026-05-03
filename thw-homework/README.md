@@ -1,10 +1,11 @@
-The following is a documentation of the package options, commands and environments
+The following is a documentation of the class options, commands and environments
 defined by the thw-homework class.
 
 # Package options
 
 The following options may be passed to the class with a key-value syntax.
 
+-------------
 | Option | Permissible values | Default | Description |
 | ------ | ------ | ------- | ----------- |
 | `type` | `exercise`, `exam` | `exercise` | The type of the document. |
