@@ -53,7 +53,8 @@ The command `\frontpage` prints a front page, similarly to the `\maketitle` comm
 in the default document classes.
 As the `\maketitle` command, `\frontpage` incorporates the document information
 that is set by the user with `\title`, `\author` and `\date`.
-In addition, the user may specify `\semester` (for lecture notes) and
+In addition, the user may specify `\semester` (for lecture notes), `\logo`
+(for a logo, e.g. of the university) and
 `\basedon`. The latter can be used to differentiate between the author of the
 document and the lecturer, e.g. "written by X, based on lectures by Y".
 
@@ -64,3 +65,46 @@ to the index. The command `\defemph{#1}` is used to emphasise
 (in italic shapre and orange colour) any notion that is
 being defined, which is then also added to the index.
 `\defemph*{#1}` is printed in the same way, but #1 is not added to the index.
+
+# Usage example
+
+The following is a basic template for using this document class.
+```
+\documentclass[a4paper, base-class=report, cleveref]{thw-notes}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{cleveref}
+
+\makeindex
+
+\title{}
+\semester{}
+\date{}
+\author{}
+\basedon{}
+\logo{}
+
+\begin{document}
+	\selectlanguage{english}
+	
+	\frontpage
+	
+	\tableofcontents
+	
+	\printallthmtocs
+	
+	\newpage
+	
+	\chapter{Chapter title}
+	
+	\allthmtocaddchapter{Chapter title}
+	
+	%% Index
+	\pagestyle{normal}
+	
+	\newpage
+	\RaggedRight
+	
+	\printindex
+\end{document}
+```
