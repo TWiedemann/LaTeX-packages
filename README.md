@@ -51,6 +51,15 @@ This package defines many theorem-like environments with a variety of
 customisation options.
 All theorem-like environments may be used with thw-thmtoc.
 
+## thw-notes
+
+This is a document class (not a package) for creating (lecture) notes in mathematics.
+Its main job is to load the thw-theorems package with some default settings.
+It also loads some other useful packages, such as thw-math, and sets the layout
+of the following elements: Page headers and footers, headers of sections/chapters/...,
+front page.
+
+
 ## thw-homework
 
 This is document class (not a package) for creating exercise sheets and exams.
