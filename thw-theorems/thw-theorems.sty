@@ -291,7 +291,7 @@
 	separator sign none, % No symbol between "1.2.3 Theorem" and header
 	beforeafter skip=\@thwthm@afterboxspace, % Minimum distance before and after box
 	breakable, % Boxes can break over page
-	% enhanced jigsaw % I don't think I need this TODO
+	enhanced jigsaw % Boxes do not look like two boxes when they break over page
 }}
 
 % Command for defining a boxed theorem-like environment and the corresponding
@@ -309,7 +309,8 @@
 	\ifbool{@thwthm@cleveref}{
 		\newtcbtheorem[
 			% use ~ for protected space in \ExplSyntax mode
-			use~counter=thmcounter, % number within=\@thwthm@theoremlevel, % TODO: is this needed?
+			use~counter=thmcounter,
+			number~within=\@thwthm@theoremlevel, % TODO: If theoremlevel=none, this should not be executed
 			crefname={\protect\GetTranslation{#1-cref}}{\protect\GetTranslation{#1-cref-plural}} % For cleveref
 		]{tcb-#1} % Name of environment
 			{\protect\GetTranslation{#1}} % Header of environment
@@ -320,7 +321,8 @@
 			{} % Prefix for label
 	}{% Same as above, but without argument "crefname=..."
 		\newtcbtheorem[
-			use~counter=thmcounter, % Counter % number~within=\@thwthm@theoremlevel TODO: is this needed?
+			use~counter=thmcounter, % Counter
+			number~within=\@thwthm@theoremlevel
 		]{tcb-#1} % Name of environment
 			{\protect\GetTranslation{#1}} % Header of environment
 			{% Additional options
