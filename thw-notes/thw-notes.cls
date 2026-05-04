@@ -150,7 +150,7 @@
 
 %% Mode of thw-notes
 % boxes mode (uses tcolorboxes)
-\ifdefstring{\thwnotes@mode}{boxes}{
+\ifdefstring{\@thwnotes@mode}{boxes}{
 	\PassOptionsToPackage{tcb-default}{thw-theorems}
 }{}
 % In mode "paper", there is nothing to actually do
