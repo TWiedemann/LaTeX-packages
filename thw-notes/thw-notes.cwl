@@ -1,4 +1,4 @@
-% lecture-notes.cwl
+% thw-notes.cwl
 #include:etoolbox
 #include:babel
 #include:xcolor
@@ -15,7 +15,7 @@
 #include:enumitem
 #include:idxlayout
 #include:geometry
-
+#include:thw-theorems
 
 \frontpage
 \semester{semester}
