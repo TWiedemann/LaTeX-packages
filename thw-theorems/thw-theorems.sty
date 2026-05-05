@@ -456,7 +456,7 @@
 % x.y is the number of the theorem thm-label and (i) is the number of the item
 % item-label. The hyperlink goes to thm-label.
 % The starred version does not produce a hyperlink.
-\NewDocumentCommand{\thmitemref}{s m m}{
+\NewDocumentCommand{\thmitemref}{s m m}{%
 	\IfBooleanTF{#1}{%
 		% Starred command
 		\@ifpackageloaded{hyperref}{%
@@ -464,7 +464,7 @@
 		}{%
 			\ref{#2}~\ref{#3}%
 		}%
-	}{
+	}{%
 		% Unstarred command
 		\@ifpackageloaded{hyperref}{%
 			\hyperref[#2]{\ref*{#2}~\ref*{#3}}%
@@ -474,22 +474,22 @@
 	}
 }
 % \thmitemcref works like \thmitemref, but prepends the environment name of thm-label.
-\NewDocumentCommand{\thmitemcref}{s m m}{
-	\IfBooleanTF{#1}{
+\NewDocumentCommand{\thmitemcref}{s m m}{%
+	\IfBooleanTF{#1}{%
 		% Starred command
-		\@ifpackageloaded{hyperref}{
-			\namecref{#2}~\ref*{#2}~\ref*{#3}
-		}{
-			\namecref{#2}~\ref{#2}~\ref{#3}
-		}
-	}{
+		\@ifpackageloaded{hyperref}{%
+			\namecref{#2}~\ref*{#2}~\ref*{#3}%
+		}{%
+			\namecref{#2}~\ref{#2}~\ref{#3}%
+		}%
+	}{%
 		% Unstarred command
-		\@ifpackageloaded{hyperref}{
-			\namecref{#2}~\hyperref[#2]{\ref*{#2}~\ref*{#3}}
-		}{
-			\namecref{#2}~\ref{#2}~\ref{#3}
-		}
-	}
+		\@ifpackageloaded{hyperref}{%
+			\namecref{#2}~\hyperref[#2]{\ref*{#2}~\ref*{#3}}%
+		}{%
+			\namecref{#2}~\ref{#2}~\ref{#3}%
+		}%
+	}%
 }
 % Uses the short version of "Claim", e.g. "Cl."
 \newcommand{\claimshortref}[1]{\GetTranslation{Claim-short}~\ref{#1}}
@@ -509,14 +509,14 @@
 \newcommand*{\@thwthm@prooflistlabel}[1]{#1}
 
 \newenvironment{prooflist}{%
-	\begin{list}{}{
+	\begin{list}{}{%
 		\setlength{\labelwidth}{0pt}%
 		\setlength{\labelsep}{4pt}%
 		\setlength{\itemindent}{\labelsep}%
 		\setlength{\leftmargin}{\labelwidth}%
 		\setlength{\itemsep}{0.0cm}%
 		\let\makelabel\@thwthm@prooflistlabel%
-	}
+	}%
 }{%
 	\end{list}
 }
