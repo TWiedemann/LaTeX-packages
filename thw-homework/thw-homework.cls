@@ -402,6 +402,12 @@
 \newcommand{\@homework@miscenvheaderfont}{\bfseries}
 \newcommand{\@homework@solutionheaderfont}{\bfseries\itshape}
 \newcommand{\@homework@claimproofheaderfont}{\itshape}
+\newcommand{\@homework@exercisebodyfont}{\normalfont}
+\newcommand{\@homework@funfactbodyfont}{\normalfont}
+\newcommand{\@homework@claimbodyfont}{\itshape}
+\newcommand{\@homework@miscenvbodyfont}{\normalfont}
+\newcommand{\@homework@solutionbodyfont}{\normalfont}
+\newcommand{\@homework@claimproofbodyfont}{\normalfont}
 
 %% Separator symbols
 \newcommand{\@homework@exerciseseparator}{.}
@@ -420,6 +426,7 @@
 %% exercise (numbered)
 \theoremstyle{exercise}
 \theoremheaderfont{\normalfont\@homework@exerciseheaderfont}
+\theorembodyfont{\normalfont\@homework@exercisebodyfont}
 \theoremseparator{\@homework@exerciseseparator}
 \theorempreskip{\@homework@afterthmspace}
 \theorempostskip{\@homework@afterthmspace}
@@ -432,6 +439,7 @@
 % claim (numbered)
 \theoremstyle{exercise}
 \theoremheaderfont{\normalfont\@homework@claimheaderfont}
+\theorembodyfont{\normalfont\@homework@claimbodyfont}
 \theoremseparator{\@homework@claimseparator}
 \theorempreskip{\@homework@afterclaimspace}
 \theorempostskip{\@homework@afterclaimspace}
@@ -444,6 +452,7 @@
 %% miscenv
 \theoremstyle{miscenv}
 \theoremheaderfont{\normalfont\@homework@miscenvheaderfont}
+\theorembodyfont{\normalfont\@homework@miscenvbodyfont}
 \theoremseparator{\@homework@miscenvseparator}
 \theorempreskip{\@homework@afterthmspace}
 \theorempostskip{\@homework@afterthmspace}
@@ -452,6 +461,7 @@
 %% Solution
 \theoremstyle{solution}
 \theoremheaderfont{\normalfont\@homework@solutionheaderfont}
+\theorembodyfont{\normalfont\@homework@solutionbodyfont}
 \theoremseparator{\@homework@solutionseparator}
 \theorempreskip{\@homework@afterthmspace}
 \theorempostskip{\@homework@afterthmspace}
@@ -507,6 +517,7 @@
 %% Only displayed if solutions=false, which works in the same as for "solution"
 \theoremstyle{exercisenonumber}
 \theoremheaderfont{\normalfont\@homework@funfactheaderfont}
+\theorembodyfont{\normalfont\@homework@funfactbodyfont}
 \theoremseparator{\@homework@funfactseparator}
 \theorempreskip{\@homework@afterthmspace}
 \theorempostskip{\@homework@afterthmspace}
@@ -545,6 +556,7 @@
 \newcommand{\@homework@claimproofqedsymbol}{\@homework@qedtriangle}
 \theoremsymbol{\@homework@claimproofqedsymbol}
 \theoremheaderfont{\normalfont\@homework@claimproofheaderfont}
+\theorembodyfont{\normalfont\@homework@claimproofbodyfont}
 \theoremseparator{\@homework@claimproofseparator}
 \theorempreskip{\@homework@afterclaimspace}
 \theorempostskip{\@homework@afterclaimspace}
