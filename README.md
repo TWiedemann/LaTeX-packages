@@ -1,4 +1,4 @@
-This is a collection of math-related LaTeX packages and classes that I wrote for my personal use.
+This is a collection of math-related LaTeX packages and classes that I wrote for my personal use. The documentation is work in progress.
 
 # Installation
 
