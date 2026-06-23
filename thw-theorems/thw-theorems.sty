@@ -386,6 +386,14 @@
 % been loaded. Executing the code later ensures that cleveref may be loaded
 % after this package.
 \AddToHook{begindocument}{
+	% If cleveref is not loaded but the cleveref package option is given, the definition
+	% of the theorem-like environments will produce an error. In this case, we produce
+	% an error message.
+	\@ifpackageloaded{cleveref}{}{%
+		\ifbool{@thwthm@cleveref}{%
+			\PackageError{thw-theorems}{cleveref~package~option~is~given~but~cleveref~package~is~not~loaded}{cleveref~package~option~is~given~but~cleveref~package~is~not~loaded}
+		}{}%
+	}
 	\clist_map_inline:Nn \l_thwthm_envnames {
 		\ifstrequal{#1}{miscthm}{
 			\@thwthm@definetheorembylists{#1}{misc}

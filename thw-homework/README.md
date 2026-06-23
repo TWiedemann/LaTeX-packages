@@ -11,7 +11,7 @@ The following options may be passed to the class with a key-value syntax.
 | `type` | `exercise`, `exam` | `exercise` | The type of the document. |
 | `exam`  | bool | `false` | Sets `type` to `exam` (which overwrites the option `type`). |
 | `solutions` | bool | `true` | Whether solutions are printed. |
-| `cleveref` | - | - | Adds [cleveref](https://ctan.org/pkg/cleveref) support. |
+| `cleveref` | - | - | Adds [cleveref](https://ctan.org/pkg/cleveref) support. cleveref must be loaded if this option is given. |
 | `exercise-numbered-within` | `none` or a $ \LaTeX$ counter | `sheet` | The counter within which exercises are numbered, or `none` if they are standalone. |
 | `header-firstpage` | bool | `false` | Whether the page header appears only on the first page. |
 | `header-author-pos` | `left`, `right` | `right` | Where in the page header the author name(s) appear. This will also affect the placement of other elements in the header. |
@@ -149,3 +149,9 @@ For example, the class file contains the following lines:
 ```
 For a full list of texts that are used and may be changed, see the end of the
 class file.
+
+# Troubleshooting
+
+If you get an error message `Undefined control sequence` at `\begin{document}`,
+then most likely, you used the cleveref package option but did not load the
+cleveref package.

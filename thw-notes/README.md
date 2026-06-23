@@ -108,3 +108,9 @@ The following is a basic template for using this document class.
 	\printindex
 \end{document}
 ```
+
+# Troubleshooting
+
+If you get an error message `Undefined control sequence` at `\begin{document}`,
+then most likely, you used the cleveref package option but did not load the
+cleveref package.

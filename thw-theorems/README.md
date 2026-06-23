@@ -9,7 +9,7 @@ The following options may be passed to the class with a key-value syntax.
 | ------ | ------ | ------- | ----------- |
 | `thmbreak` | bool | `false` | Whether a line break occurs after the heading of a theorem. |
 | `theoremlevel` | `none` or a $\LaTeX$ counter | `section` | The counter within which theorems are numbered, or `none` if they are standalone. |
-| `cleveref` | - | - | Adds [cleveref](https://ctan.org/pkg/cleveref) support. |
+| `cleveref` | - | - | Adds [cleveref](https://ctan.org/pkg/cleveref) support. cleveref must be loaded if this option is given. |
 | `no-standard-environments` | - | - | Unless this option is given, a standard list of theorems is defined (see below). |
 | `additional-environments` | list of names | empty | A theorem-like environment is defined for every name in the list (cf. "Localisation" below). |
 | `tcb-environments` | list of names | empty | A list of theorem names whose environments are printed in a tcolorbox. |
@@ -264,3 +264,9 @@ do this for German and English is to use `\DeclareThmTranslation`, e.g.
 ```
 \DeclareThmTranslation{theorem}{Theorem}{Theorems}{Satz}{Sätze}
 ```
+
+# Troubleshooting
+
+If you get an error message `Undefined control sequence` at `\begin{document}`,
+then most likely, you used the cleveref package option but did not load the
+cleveref package.
