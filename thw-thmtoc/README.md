@@ -17,7 +17,7 @@ it is not given, then "main.thmtoc" is used instead.
 # Loading the package and package options
 
 The title of each thmtoc is formatted using (the starred version of) one of the
-standard section commands in $ \LaTeX $, such as `\section*` or `\chapter*`.
+standard section commands in LaTeX, such as `\section*` or `\chapter*`.
 The user may specify which one is used by loading the package with the appropriate
 thmtoc-head option.
 It seems reasonable to use the same sectioning command that is also used for the
@@ -41,7 +41,7 @@ We can print our thmtocs as follows:
 \printthmtoc[def]{List of Definitions}
 ```
 Of course, these thmtocs will be empty in our current example because we did
-not yet tell $ \LaTeX $ with which entries they should be filled.
+not yet tell LaTeX with which entries they should be filled.
 
 # Filling a thmtoc
 
@@ -67,7 +67,7 @@ and most likely, it is not obtained by appending "counter" to the environment na
 If you use one of the standard packages amsthm or ntheorem and defined your
 theorem environment as `\newtheorem{theorem}{Theorem}` or
 `\newtheorem{theorem}{Theorem}[section]`, then the name of the counter is simply
-the name of the associated environment, so theorem in this case.
+the name of the associated environment, so "theorem" in this case.
 If you defined your theorem to use another counter, as in
 `\newtheorem{definition}[theorem]{Definition}`, then of course you should also
 use this counter in `\thmtocaddentry`.
