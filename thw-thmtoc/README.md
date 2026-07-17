@@ -131,7 +131,7 @@ this relies on the internal implementation of nameref, which seems dangerous.
 Further, I am cautious about relying more than necessary on a package that patches
 important commands such as `\section`.
 - At first glance, this seems like a use case for `AddToHook` or rather
-`AddToHookWithArguments`. [However, it turns out that, weirdly as it sounds,
+`AddToHookWithArguments`. [However, and weirdly, it turns out that
 the `\section` command is actually a command without arguments.
 ](https://tex.stackexchange.com/questions/729066/can-addtohookwitharguments-let-us-access-to-the-arguments-of-a-command-that-has#comment1815401_729066)
 Hence you can patch `\section` to execute some code at its end, but this code
