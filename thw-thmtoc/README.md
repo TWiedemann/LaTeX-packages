@@ -109,7 +109,7 @@ To do so, you can use the commands `\thmtocaddpart`, `\thmtocaddchapter`, `\thmt
 \thmtocaddsection[def]{Section name}
 ```
 Here the name of the section has to be repeated (but nothing prevents you from
-supplying a name that is different from the action section name) and the command
+supplying a name that is different from the actual section name) and the command
 has to be used once for every thmtoc which should contain the section.
 
 The commands `\thmtocaddpart`, `\thmtocaddchapter`, `\thmtocaddsection`, `\thmtocaddsubsection`
