@@ -78,3 +78,6 @@ option and can be changed in the middle of the document with the babel command
 `\selectlanguage{name}`.
 - Configurable style for page headers, footers and the document title.
 
+# License
+
+This software is licensed under the GPL-3.0 license.
