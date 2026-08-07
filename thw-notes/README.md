@@ -4,7 +4,7 @@ defined by the thw-notes class.
 # Class options
 
 The following class options are passed on to the thw-theorems package:
- `theoremlevel`, `additional-environments`, `thmbreak`, `cleveref`.
+ `theoremlevel`, `additional-environments`, `italic-environments`, `thmbreak`, `cleveref`.
 
 Further, the following options are defined.
 

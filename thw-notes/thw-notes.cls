@@ -16,7 +16,10 @@
 	%% Options passed on to thw-theorems
 	theoremlevel.code = {\PassOptionsToPackage{theoremlevel=#1}{thw-theorems}},
 	additional-environments.code = {
-		\PassOptionsToPackage{additional-environments=#1}{thw-theorems}
+		\PassOptionsToPackage{additional-environments={#1}}{thw-theorems}
+	},
+	italic-environments.code = {
+		\PassOptionsToPackage{italic-environments={#1}}{thw-theorems}
 	},
 	thmbreak.if = @thwnotes@thmbreak,
 	cleveref.if = @thwnotes@cleveref,
