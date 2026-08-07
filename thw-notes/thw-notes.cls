@@ -106,8 +106,8 @@
 		\pdfbookmark{\GetTranslation{Theorem-List}}{thmtoc-thm}
 		\printthmtoc[1]{\GetTranslation{Theorem-List}}
 		\newpage
-		\pdfbookmark{\GetTranslation{Lemma-List}}{thmtoc-lem}
-		\printthmtoc[2]{\GetTranslation{Lemma-List}}
+		\pdfbookmark{\GetTranslation{Lemma-Proposition-List}}{thmtoc-lem}
+		\printthmtoc[2]{\GetTranslation{Lemma-Proposition-List}}
 		\newpage
 		\pdfbookmark{\GetTranslation{Definition-List}}{thmtoc-def}
 		\printthmtoc[3]{\GetTranslation{Definition-List}}
