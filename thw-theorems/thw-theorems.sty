@@ -144,12 +144,14 @@
 % QED symbols
 % Each symbol starts with a bit of horizontal space to ensure a certain
 % minimum distance from the environment content.
-\newcommand{\qedbox}{\hspace{0.5cm}\begin{tikzpicture}[scale=0.23]
+\newcommand{\qedboxbasic}{\begin{tikzpicture}[scale=0.23]% Square
 	\draw (0,0) -- (1,0) -- (1,1) -- (0,1) -- cycle;
-\end{tikzpicture}} % Square
-\newcommand{\qedtriangle}{\hspace{0.5cm}\begin{tikzpicture}[scale=0.23]
+\end{tikzpicture}}
+\newcommand{\qedbox}{\hspace{0.5cm}\qedboxbasic}
+\newcommand{\qedtrianglebasic}{\begin{tikzpicture}[scale=0.23]% Triangle
 	\draw (0,0) -- (1,0) -- (0,1) -- cycle;
-\end{tikzpicture}} % Triangle
+\end{tikzpicture}}
+\newcommand{\qedtriangle}{\hspace{0.5cm}\qedtrianglebasic}
 
 % Lengths and spacing commands
 \newlength{\@thwthm@afterthmspace}% Placed after and before every unboxed theorem
